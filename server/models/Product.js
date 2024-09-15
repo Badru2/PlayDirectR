@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database.js");
+const User = require("./User.js");
 
 const Product = sequelize.define(
   "Product",
@@ -13,11 +14,11 @@ const Product = sequelize.define(
       allowNull: false,
     },
     images: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
+      type: DataTypes.JSON,
       allowNull: false,
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     price: {
@@ -47,5 +48,10 @@ const Product = sequelize.define(
     timestamps: true,
   }
 );
+
+Product.associate = function (models) {
+  Product.belongsTo(models.User, { foreignKey: "user_id", as: "user" });
+  Product.hasMany(models.Cart, { foreignKey: "product_id", as: "carts" });
+};
 
 module.exports = Product;

@@ -8,6 +8,8 @@ const transactionRoutes = require("./routes/transaction");
 const wishlistRoutes = require("./routes/wishlist");
 const userRoutes = require("./routes/user");
 
+const path = require("path");
+
 const { Product } = require("./models/Product.js");
 const { Cart } = require("./models/Cart.js");
 const { Transaction } = require("./models/Transaction.js");
@@ -16,6 +18,8 @@ const { Wishlist } = require("./models/Wishlist.js");
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+
+app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/product", productRoutes);

@@ -3,6 +3,12 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  css: {
+    devSourcemap: true,
+    lightningcss: {
+      mode: "live",
+    },
+  },
   server: {
     host: "0.0.0.0",
     port: 3001,

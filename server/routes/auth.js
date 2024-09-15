@@ -72,7 +72,6 @@ router.get("/profile", authMiddleware, (req, res) => {
   // Access user data from req.user
   const { id, email, username } = req.user;
 
-  console.log(req.user);
   res.status(200).json({
     message: "User profile retrieved successfully",
     user: {

@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
+const Product = require("./Product");
+const Cart = require("./Cart");
 
 const User = sequelize.define(
   "User",
@@ -38,5 +40,10 @@ const User = sequelize.define(
     timestamps: true,
   }
 );
+
+User.associations = function (models) {
+  User.hasMany(models.Product, { foreignKey: "user_id", as: "products" });
+  User.hasMany(models.Cart, { foreignKey: "user_id", as: "carts" });
+};
 
 module.exports = User;

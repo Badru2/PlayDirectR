@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
+const Product = require("./Product");
+const User = require("./User");
 
 const Cart = sequelize.define(
   "Cart",
@@ -21,5 +23,10 @@ const Cart = sequelize.define(
     timestamps: true,
   }
 );
+
+Cart.associate = function (models) {
+  Cart.belongsTo(models.User, { foreignKey: "user_id", as: "user" });
+  Cart.belongsTo(models.Product, { foreignKey: "product_id", as: "product" });
+};
 
 module.exports = Cart;

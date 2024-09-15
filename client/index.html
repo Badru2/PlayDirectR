@@ -8,8 +8,17 @@
     <link href="./output.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body>
+  <body data-theme="light">
     <div id="root" class="bg-gray-100 min-h-screen w-full text-black"></div>
+    <script type="module">
+      function formatNumber() {
+        let input = document.getElementById("numberInput");
+        let value = input.value.replace(/,/g, ""); // Remove existing commas
+        if (!isNaN(value) && value !== "") {
+          input.value = parseFloat(value).toLocaleString("id-ID");
+        }
+      }
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

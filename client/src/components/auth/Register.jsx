@@ -1,8 +1,12 @@
-// src/components/Register.js
 import { useState } from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { loginSuccess } from "../../store/authSlice";
 
 const Register = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -17,8 +21,27 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/auth/register", formData);
-      alert(response.data.message);
+      // Register the user
+      const registerResponse = await axios.post("/api/auth/register", formData);
+      alert(registerResponse.data.message);
+
+      // Automatic login after registration
+      const loginResponse = await axios.post("/api/auth/login", {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      // Dispatch login success and store user data in Redux
+      dispatch(loginSuccess(loginResponse.data.user));
+
+      // Redirect based on the role
+      if (loginResponse.data.role === "superAdmin") {
+        navigate("/super-admin/dashboard");
+      } else if (loginResponse.data.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
     } catch (error) {
       alert(error.response.data.message);
     }
