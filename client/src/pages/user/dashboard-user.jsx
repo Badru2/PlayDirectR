@@ -1,11 +1,10 @@
 import React from "react";
-import UserLayout from "../../layouts/UserLayout.js";
 
 const UserDashboard = () => {
   return (
-    <UserLayout>
+    <div className="">
       <h1>User Dashboard</h1>
-    </UserLayout>
+    </div>
   );
 };
 

@@ -1,11 +1,12 @@
-// src/components/Login.js
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../store/authSlice";
 
-const navigate = useNavigate();
-
-function Login() {
+const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   const handleChange = (e) => {
@@ -16,14 +17,18 @@ function Login() {
     e.preventDefault();
     try {
       const response = await axios.post("/api/auth/login", formData);
+
+      // Dispatch login success and store user data in Redux
+      dispatch(loginSuccess(response.data.user));
+
       alert("Login successful");
-      // Optionally store the token in localStorage or state
-      if (response.data.role == "super-admin") {
+
+      if (response.data.role === "superAdmin") {
         navigate("/super-admin/dashboard");
-      } else if (response.data.role == "admin") {
+      } else if (response.data.role === "admin") {
         navigate("/admin/dashboard");
       } else {
-        navigate("/dashboard");
+        navigate("/");
       }
     } catch (error) {
       alert(error.response.data.message);
@@ -47,6 +52,6 @@ function Login() {
       <button type="submit">Login</button>
     </form>
   );
-}
+};
 
 export default Login;

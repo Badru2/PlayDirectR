@@ -2,7 +2,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-function Register() {
+const Register = () => {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -46,6 +46,6 @@ function Register() {
       <button type="submit">Register</button>
     </form>
   );
-}
+};
 
 export default Register;

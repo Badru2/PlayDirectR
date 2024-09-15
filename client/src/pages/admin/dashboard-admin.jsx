@@ -1,11 +1,10 @@
 import React from "react";
-import AdminLayout from "../../layouts/AdminLayout.js";
 
 const AdminDashboard = () => {
   return (
-    <AdminLayout>
+    <div>
       <h1>Admin Dashboard</h1>
-    </AdminLayout>
+    </div>
   );
 };
 

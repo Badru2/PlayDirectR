@@ -1,8 +1,7 @@
-// src/components/Profile.js
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function Profile() {
+const Profile = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -35,6 +34,6 @@ function Profile() {
       <p>Email: {user.email}</p>
     </div>
   );
-}
+};
 
 export default Profile;

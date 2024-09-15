@@ -1,11 +1,12 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 
-const AdminLayout = ({ childern }) => {
+const AdminLayout = () => {
   return (
     <div>
-      <div></div>
-
-      <main>{childern}</main>
+      <main>
+        <Outlet />
+      </main>
     </div>
   );
 };

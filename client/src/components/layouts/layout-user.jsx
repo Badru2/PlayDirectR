@@ -1,11 +1,12 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 
-const UserLayout = ({ childern }) => {
+const UserLayout = () => {
   return (
     <div>
-      <div></div>
-
-      <main>{childern}</main>
+      <main>
+        <Outlet />
+      </main>
     </div>
   );
 };
