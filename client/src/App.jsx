@@ -21,6 +21,7 @@ import { ThemeProvider } from "./components/themes/theme-provider";
 import { store } from "./store/store";
 import { AuthProvider } from "./hooks/useAuth";
 import RequireAuth from "./components/auth/RequireAuth"; // Import the RequireAuth component
+import UserTransaction from "./pages/user/transaction";
 
 const App = () => {
   return (
@@ -45,6 +46,7 @@ const App = () => {
                   <Route path="" element={<UserDashboard />} />
                   <Route path="detail" element={<DetailProduct />} />
                   <Route path="cart" element={<CartPage />} />
+                  <Route path="transaction" element={<UserTransaction />} />
                 </Route>
               </Route>
 

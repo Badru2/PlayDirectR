@@ -40,6 +40,11 @@ export const deleteFromCart = createAsyncThunk(
   }
 );
 
+export const clearCart = createAsyncThunk("cart/clearCart", async (userId) => {
+  await axios.delete(`/api/cart/clear?userId=${userId}`);
+  return userId;
+});
+
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
@@ -47,7 +52,11 @@ const cartSlice = createSlice({
     status: "idle",
     error: null,
   },
-  reducers: {},
+  reducers: {
+    clearCart: (state, action) => {
+      state.cart = state.cart.filter((item) => item.user_id !== action.payload);
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getCart.pending, (state) => {

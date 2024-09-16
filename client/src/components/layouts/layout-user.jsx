@@ -10,9 +10,14 @@ const UserLayout = () => {
             PlayDirect
           </Link>
 
-          <Link to={"/cart"} className="font-bold text-xl">
-            Cart
-          </Link>
+          <div className="space-x-3">
+            <Link to={"/cart"} className="font-bold text-xl">
+              Cart
+            </Link>
+            <Link to={"/transaction"} className="font-bold text-xl">
+              Transaction
+            </Link>
+          </div>
         </div>
       </div>
 

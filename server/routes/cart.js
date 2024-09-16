@@ -88,4 +88,19 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
+router.delete("/clear", async (req, res) => {
+  const { userId } = req.query;
+
+  try {
+    await Cart.destroy({
+      where: {
+        user_id: userId,
+      },
+    });
+    res.status(200).json({ message: "Carts deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
 module.exports = router;

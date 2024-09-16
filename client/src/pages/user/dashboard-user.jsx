@@ -18,7 +18,6 @@ const ProductGrid = ({ products, handleAddToCart, carts, user }) => {
 
         return (
           <div
-            key={product.id}
             className="bg-white shadow-md hover:transition-transform hover:scale-105 hover:shadow-2xl duration-300 relative rounded-t-md"
             onMouseEnter={() => setHoveredProductId(product.id)}
             onMouseLeave={() => setHoveredProductId(null)}
@@ -44,7 +43,7 @@ const ProductGrid = ({ products, handleAddToCart, carts, user }) => {
 
             <button
               className={
-                "w-full bg-blue-600 text-white text-center py-2 rounded-b-md rounded-none absolute " +
+                "w-full bg-blue-600 text-white text-center py-2 rounded-b-md rounded-none absolute z-10 " +
                 (isHovered ? "block" : "hidden")
               }
               onClick={(e) => handleAddToCart(product.id)}
