@@ -68,9 +68,14 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/logout", (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logged out successfully" });
+});
+
 router.get("/profile", authMiddleware, (req, res) => {
   // Access user data from req.user
-  const { id, email, username } = req.user;
+  const { id, email, username, role } = req.user;
 
   res.status(200).json({
     message: "User profile retrieved successfully",
@@ -78,6 +83,7 @@ router.get("/profile", authMiddleware, (req, res) => {
       id,
       email,
       username,
+      role,
     },
   });
 });

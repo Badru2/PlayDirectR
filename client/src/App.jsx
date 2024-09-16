@@ -12,36 +12,59 @@ import AdminDashboard from "./pages/admin/dashboard-admin";
 import SuperAdminDashboard from "./pages/super-admin/dashboard-super-admin";
 
 import ProductPage from "./pages/admin/product";
+import DetailProduct from "./pages/user/detail-product";
+import CartPage from "./pages/user/cart";
+import AdminCRUD from "./pages/super-admin/admin";
 
 import { Provider } from "react-redux";
 import { ThemeProvider } from "./components/themes/theme-provider";
-
 import { store } from "./store/store";
-import DetailProduct from "./pages/user/detail-product";
+import { AuthProvider } from "./hooks/useAuth";
+import RequireAuth from "./components/auth/RequireAuth"; // Import the RequireAuth component
 
 const App = () => {
   return (
     <Provider store={store}>
       <ThemeProvider defaultTheme="light" storageKey="vite-ui">
         <Router>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+          <AuthProvider>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
 
-            <Route path="/" element={<UserLayout />}>
-              <Route path="" element={<UserDashboard />} />
-              <Route path="detail" element={<DetailProduct />} />
-            </Route>
+              {/* User Protected Routes */}
+              <Route
+                element={
+                  <RequireAuth
+                    allowedRoles={["user", "admin", "super-admin"]}
+                  />
+                }
+              >
+                <Route path="/" element={<UserLayout />}>
+                  <Route path="" element={<UserDashboard />} />
+                  <Route path="detail" element={<DetailProduct />} />
+                  <Route path="cart" element={<CartPage />} />
+                </Route>
+              </Route>
 
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route path="dashboard" element={<AdminDashboard />} />
-              <Route path="product" element={<ProductPage />} />
-            </Route>
+              {/* Admin Protected Routes */}
+              <Route element={<RequireAuth allowedRoles={["admin"]} />}>
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route path="dashboard" element={<AdminDashboard />} />
+                  <Route path="product" element={<ProductPage />} />
+                </Route>
+              </Route>
 
-            <Route path="super-admin" element={<SuperAdminLayout />}>
-              <Route path="dashboard" element={<SuperAdminDashboard />} />
-            </Route>
-          </Routes>
+              {/* Super Admin Protected Routes */}
+              <Route element={<RequireAuth allowedRoles={["super-admin"]} />}>
+                <Route path="super-admin" element={<SuperAdminLayout />}>
+                  <Route path="dashboard" element={<SuperAdminDashboard />} />
+                  <Route path="admin" element={<AdminCRUD />} />
+                </Route>
+              </Route>
+            </Routes>
+          </AuthProvider>
         </Router>
       </ThemeProvider>
     </Provider>

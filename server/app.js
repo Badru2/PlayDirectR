@@ -10,8 +10,9 @@ const userRoutes = require("./routes/user");
 
 const path = require("path");
 
-const { Product } = require("./models/Product.js");
-const { Cart } = require("./models/Cart.js");
+// const { User } = require("./models/User.js");
+const Product = require("./models/Product.js");
+const Cart = require("./models/Cart.js");
 const { Transaction } = require("./models/Transaction.js");
 const { Wishlist } = require("./models/Wishlist.js");
 
@@ -27,6 +28,9 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/transaction", transactionRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/user", userRoutes);
+
+console.log(Cart.associations);
+console.log(Product.associations);
 
 // Connect to PostgreSQL database and start the server
 sequelize.sync({ alter: true }).then(() => {

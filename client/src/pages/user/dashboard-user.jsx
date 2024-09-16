@@ -61,7 +61,7 @@ const ProductGrid = ({ products, handleAddToCart, carts, user }) => {
 const UserDashboard = () => {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.products.products);
-  const carts = useSelector((state) => state.cart.cart.cart);
+  const carts = useSelector((state) => state.cart);
   const user = useSelector((state) => state.auth.user);
   const [loading, setLoading] = useState(true);
   const [sortedProducts, setSortedProducts] = useState([]);
@@ -99,9 +99,7 @@ const UserDashboard = () => {
       setSortedProducts(limitedProducts);
     }
 
-    if (carts && carts.length > 0) {
-      console.log(carts);
-    }
+    console.log("this is cart", carts);
   }, [products, carts]);
 
   const handleAddToCart = async (productId) => {

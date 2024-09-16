@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database.js");
 const User = require("./User.js");
+const Cart = require("./Cart.js");
 
 const Product = sequelize.define(
   "Product",
@@ -11,7 +12,12 @@ const Product = sequelize.define(
     },
     user_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      references: {
+        model: "Users",
+        key: "id",
+      },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     },
     images: {
       type: DataTypes.JSON,
@@ -45,13 +51,16 @@ const Product = sequelize.define(
     },
   },
   {
-    timestamps: true,
+    timestamps: false, // Disable Sequelize's automatic timestamps (createdAt, updatedAt)
   }
 );
 
-Product.associate = function (models) {
-  Product.belongsTo(models.User, { foreignKey: "user_id", as: "user" });
-  Product.hasMany(models.Cart, { foreignKey: "product_id", as: "carts" });
-};
+Cart.belongsTo(Product, { foreignKey: "product_id" });
+Product.hasMany(Cart, { foreignKey: "product_id" });
+
+// Product.associate = (models) => {
+//   Product.hasMany(models.Cart, { foreignKey: "product_id" });
+//   Product.belongsTo(models.User, { foreignKey: "user_id" });
+// };
 
 module.exports = Product;

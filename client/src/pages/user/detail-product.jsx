@@ -51,7 +51,6 @@ const DetailProduct = () => {
                 {showFormatRupiah(product.product.price)}
               </div>
 
-              {/* <div>{product.product.description}</div> */}
               <div
                 dangerouslySetInnerHTML={{
                   __html: product.product.description,

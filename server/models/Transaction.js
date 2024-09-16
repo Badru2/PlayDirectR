@@ -6,7 +6,12 @@ const Transaction = sequelize.define(
   {
     user_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      references: {
+        model: "Users",
+        key: "id",
+      },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     },
     products: {
       type: DataTypes.JSON,

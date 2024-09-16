@@ -106,15 +106,17 @@ const productSlice = createSlice({
         state.status = "loading";
       })
       .addCase(updateProduct.fulfilled, (state, action) => {
-        // if (Array.isArray(state.products)) {
-        // if (index !== -1) {
-        //   state.products[index] = action.payload;
-        // }
-        // const index =
-        // } else {
-        //   console.error("Products state is not an array");
-        // }
-        state.products.findIndex((product) => product.id === action.payload.id);
+        console.log(state.products); // Debug to see what the structure is
+        if (Array.isArray(state.products)) {
+          const index = state.products.findIndex(
+            (product) => product.id === action.payload.id
+          );
+          if (index !== -1) {
+            state.products[index] = action.payload;
+          }
+        } else {
+          console.error("state.products is not an array");
+        }
         state.status = "succeeded";
       })
       .addCase(updateProduct.rejected, (state, action) => {

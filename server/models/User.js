@@ -41,9 +41,9 @@ const User = sequelize.define(
   }
 );
 
-User.associations = function (models) {
-  User.hasMany(models.Product, { foreignKey: "user_id", as: "products" });
-  User.hasMany(models.Cart, { foreignKey: "user_id", as: "carts" });
-};
+// User.associate = (models) => {
+//   User.hasMany(models.Product, { foreignKey: "user_id" });
+//   User.hasMany(models.Cart, { foreignKey: "user_id" });
+// };
 
 module.exports = User;

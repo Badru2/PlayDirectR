@@ -1,5 +1,6 @@
 const express = require("express");
 const Cart = require("../models/Cart");
+const Product = require("../models/Product");
 
 const router = express.Router();
 
@@ -8,6 +9,8 @@ router.post("/add", async (req, res) => {
 
   try {
     const existingCart = await Cart.findOne({ where: { user_id, product_id } });
+
+    console.log(req.body);
     if (existingCart) {
       const updatedCart = await Cart.update(
         { quantity: existingCart.quantity + quantity },
@@ -18,15 +21,16 @@ router.post("/add", async (req, res) => {
         .json({ message: "Cart updated successfully", updatedCart });
       return;
     } else {
+      console.log(req.body);
       const cart = await Cart.create({
         user_id,
         product_id,
         quantity,
-        created_at: new Date(),
-        updated_at: new Date(),
+        // createdAt: new Date(),
+        // updatedAt: new Date(),
       });
+      res.status(201).json({ message: "Cart created successfully", cart });
     }
-    res.status(201).json({ message: "Cart created successfully", cart });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
@@ -36,7 +40,18 @@ router.get("/show", async (req, res) => {
   const { userId } = req.query;
 
   try {
-    const carts = await Cart.findAll({ where: { user_id: userId } });
+    const carts = await Cart.findAll({
+      where: { user_id: userId },
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: Product,
+          attributes: ["id", "name", "price", "images"],
+        },
+      ],
+    }).catch((error) => {
+      console.log(error);
+    });
     res.status(200).json({ message: "Carts retrieved successfully", carts });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });

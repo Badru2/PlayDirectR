@@ -21,7 +21,7 @@ const Login = () => {
       // Dispatch login success and store user data in Redux
       dispatch(loginSuccess(response.data.user));
 
-      alert("Login successful");
+      // alert("Login successful");
 
       if (response.data.role === "superAdmin") {
         navigate("/super-admin/dashboard");

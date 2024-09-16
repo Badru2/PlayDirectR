@@ -39,9 +39,9 @@ const ProductPage = () => {
   });
 
   useEffect(() => {
-    setLoading(true);
     dispatch(getProducts(), setLoading(false));
     dispatch(getUser());
+    setLoading(false);
   }, [dispatch]);
 
   const handleSubmit = (e) => {
@@ -80,9 +80,9 @@ const ProductPage = () => {
         category: "",
       });
 
-      dispatch(getProducts());
       setLoading(false);
       setFiles([]);
+      dispatch(getProducts());
     } catch (error) {
       console.log(error);
     }
