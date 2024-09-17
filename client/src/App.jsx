@@ -22,6 +22,9 @@ import { store } from "./store/store";
 import { AuthProvider } from "./hooks/useAuth";
 import RequireAuth from "./components/auth/RequireAuth"; // Import the RequireAuth component
 import UserTransaction from "./pages/user/transaction";
+import AdminTransaction from "./pages/admin/transaction";
+import DetailTransaction from "./pages/user/detail-transaction";
+import UnauthLayout from "./components/layouts/layout-unauth";
 
 const App = () => {
   return (
@@ -31,8 +34,10 @@ const App = () => {
           <AuthProvider>
             <Routes>
               {/* Public Routes */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
+              <Route element={<UnauthLayout />}>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+              </Route>
 
               {/* User Protected Routes */}
               <Route
@@ -47,6 +52,10 @@ const App = () => {
                   <Route path="detail" element={<DetailProduct />} />
                   <Route path="cart" element={<CartPage />} />
                   <Route path="transaction" element={<UserTransaction />} />
+                  <Route
+                    path="transaction/detail"
+                    element={<DetailTransaction />}
+                  />
                 </Route>
               </Route>
 
@@ -55,6 +64,7 @@ const App = () => {
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route path="dashboard" element={<AdminDashboard />} />
                   <Route path="product" element={<ProductPage />} />
+                  <Route path="transaction" element={<AdminTransaction />} />
                 </Route>
               </Route>
 

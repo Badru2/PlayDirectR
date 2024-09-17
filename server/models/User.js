@@ -2,6 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Product = require("./Product");
 const Cart = require("./Cart");
+const Transaction = require("./Transaction");
 
 const User = sequelize.define(
   "User",
@@ -40,10 +41,5 @@ const User = sequelize.define(
     timestamps: true,
   }
 );
-
-// User.associate = (models) => {
-//   User.hasMany(models.Product, { foreignKey: "user_id" });
-//   User.hasMany(models.Cart, { foreignKey: "user_id" });
-// };
 
 module.exports = User;

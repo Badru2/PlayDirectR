@@ -9,6 +9,28 @@ export const getTransactions = createAsyncThunk(
   }
 );
 
+export const detailUserTransaction = createAsyncThunk(
+  "transaction/detailUserTransaction",
+  async ({ userId, transactionId }) => {
+    const response = await axios.get(
+      `/api/transaction/detail?userId=${userId}&transactionId=${transactionId}`
+    );
+
+    console.log(response.data);
+    return response.data;
+  }
+);
+
+export const getUserTransactions = createAsyncThunk(
+  "transaction/getUserTransactions",
+  async (userId) => {
+    const response = await axios.get(`/api/transaction/get?userId=${userId}`);
+
+    console.log(response.data);
+    return response.data;
+  }
+);
+
 export const createTransaction = createAsyncThunk(
   "transaction/createTransaction",
   async (formData) => {
@@ -19,11 +41,15 @@ export const createTransaction = createAsyncThunk(
 
 export const updateTransaction = createAsyncThunk(
   "transaction/updateTransaction",
-  async (formData) => {
+  async ({ transactionId, status }) => {
+    console.log(transactionId, status);
+
     const response = await axios.put(
-      `/api/transaction/update/${formData.id}`,
-      formData
+      `/api/transaction/update/${transactionId}`,
+      { status }
     );
+
+    console.log(response.data);
     return response.data;
   }
 );
@@ -45,6 +71,12 @@ const transactionSlice = createSlice({
   },
   reducers: {
     getTransactions: (state, action) => {
+      state.transactions = action.payload;
+    },
+    getUserTransactions: (state, action) => {
+      state.transactions = action.payload;
+    },
+    detailUserTransaction: (state, action) => {
       state.transactions = action.payload;
     },
     createTransaction: (state, action) => {

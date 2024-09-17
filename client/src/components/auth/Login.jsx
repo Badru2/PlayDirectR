@@ -19,37 +19,49 @@ const Login = () => {
       const response = await axios.post("/api/auth/login", formData);
 
       // Dispatch login success and store user data in Redux
-      dispatch(loginSuccess(response.data.user));
+      dispatch(loginSuccess(response.data));
 
-      // alert("Login successful");
+      // Fetch user data after successful login
+      const responseUser = await axios.get("/api/auth/profile", {
+        headers: {
+          Authorization: `Bearer ${response.data.token}`,
+        },
+      });
 
-      if (response.data.role === "superAdmin") {
+      const userData = responseUser.data.user;
+
+      // Redirect based on the user's role directly here
+      if (userData.role === "superAdmin") {
         navigate("/super-admin/dashboard");
-      } else if (response.data.role === "admin") {
+      } else if (userData.role === "admin") {
         navigate("/admin/dashboard");
       } else {
         navigate("/");
       }
     } catch (error) {
-      alert(error.response.data.message);
+      alert(error.response?.data?.message || "An error occurred.");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="bg-white shadow-md p-4 space-y-3">
       <input
         name="email"
         type="email"
         placeholder="Email"
         onChange={handleChange}
+        className="w-full border p-2"
       />
       <input
         name="password"
         type="password"
         placeholder="Password"
         onChange={handleChange}
+        className="w-full border p-2"
       />
-      <button type="submit">Login</button>
+      <button type="submit" className="w-full bg-blue-500 text-white">
+        Login
+      </button>
     </form>
   );
 };

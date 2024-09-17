@@ -12,12 +12,13 @@ const ProductGrid = ({ products, handleAddToCart, carts, user }) => {
   const [hoveredProductId, setHoveredProductId] = useState(null);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
       {products.map((product) => {
         const isHovered = hoveredProductId === product.id;
 
         return (
           <div
+            key={product.id}
             className="bg-white shadow-md hover:transition-transform hover:scale-105 hover:shadow-2xl duration-300 relative rounded-t-md"
             onMouseEnter={() => setHoveredProductId(product.id)}
             onMouseLeave={() => setHoveredProductId(null)}
@@ -26,7 +27,7 @@ const ProductGrid = ({ products, handleAddToCart, carts, user }) => {
               <img
                 src={"/public/images/products/" + product.images[0]}
                 alt={product.name}
-                className="h-72 object-cover w-full object-top"
+                className="h-40 lg:h-56 object-cover w-full object-top"
               />
             </Link>
             <div className="p-2 space-y-3">

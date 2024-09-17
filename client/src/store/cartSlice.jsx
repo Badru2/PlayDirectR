@@ -14,6 +14,7 @@ export const addToCart = createAsyncThunk(
     try {
       const response = await axios.post(`/api/cart/add`, formData);
 
+      console.log(response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -23,11 +24,10 @@ export const addToCart = createAsyncThunk(
 
 export const updateCart = createAsyncThunk(
   "cart/updateCart",
-  async ({ userId, productId, formData }) => {
-    const response = await axios.put(
-      `/api/cart/update/?userId=${userId}&productId=${productId}`,
-      formData
-    );
+  async ({ cartId, quantity }) => {
+    const response = await axios.put(`/api/cart/update/${cartId}`, {
+      quantity,
+    });
     return response.data;
   }
 );
@@ -89,18 +89,24 @@ const cartSlice = createSlice({
       })
       .addCase(updateCart.fulfilled, (state, action) => {
         const updatedItem = action.payload;
-        const index = state.cart.findIndex(
-          (item) => item.id === updatedItem.id
-        );
-        if (index !== -1 && Array.isArray(state.cart)) {
-          state.cart[index] = updatedItem;
+        console.log("Updated item:", updatedItem);
+
+        if (Array.isArray(state.cart)) {
+          const index = state.cart.findIndex(
+            (item) => item.id === updatedItem.id
+          );
+          if (index !== -1) {
+            state.cart[index] = updatedItem;
+          }
+        } else {
+          console.error("state.cart is not an array:", state.cart);
         }
         state.status = "succeeded";
       })
-      .addCase(updateCart.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-      })
+      // .addCase(updateCart.rejected, (state, action) => {
+      //   state.status = "failed";
+      //   state.error = action.error.message;
+      // })
       .addCase(deleteFromCart.pending, (state) => {
         state.status = "loading";
       })

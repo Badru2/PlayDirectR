@@ -13,8 +13,9 @@ const path = require("path");
 // const { User } = require("./models/User.js");
 const Product = require("./models/Product.js");
 const Cart = require("./models/Cart.js");
-const { Transaction } = require("./models/Transaction.js");
+const Transaction = require("./models/Transaction.js");
 const { Wishlist } = require("./models/Wishlist.js");
+const User = require("./models/User.js");
 
 const app = express();
 app.use(express.json());
@@ -29,6 +30,20 @@ app.use("/api/transaction", transactionRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/user", userRoutes);
 
+User.hasMany(Transaction, { foreignKey: "user_id" });
+User.hasMany(Product, { foreignKey: "user_id" });
+User.hasMany(Cart, { foreignKey: "user_id" });
+
+Cart.belongsTo(Product, { foreignKey: "product_id", as: "product" });
+Cart.belongsTo(User, { foreignKey: "user_id", as: "user" });
+
+Cart.belongsTo(Product, { foreignKey: "product_id" });
+Product.hasMany(Cart, { foreignKey: "product_id" });
+
+Transaction.belongsTo(User, { foreignKey: "user_id" });
+
+console.log(Transaction.associations);
+console.log(User.associations);
 console.log(Cart.associations);
 console.log(Product.associations);
 

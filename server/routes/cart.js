@@ -10,6 +10,15 @@ router.post("/add", async (req, res) => {
   try {
     const existingCart = await Cart.findOne({ where: { user_id, product_id } });
 
+    // limit by product quantity
+    if (
+      existingCart &&
+      existingCart.quantity >= Product.findById(product_id).quantity
+    ) {
+      res.status(400).json({ message: "Cart limit reached" });
+      return;
+    }
+
     console.log(req.body);
     if (existingCart) {
       const updatedCart = await Cart.update(
@@ -67,6 +76,13 @@ router.put("/update/:id", async (req, res) => {
       return res.status(404).json({ message: "Cart not found" });
     }
     cart.quantity = quantity;
+
+    // if 0 quantity, delete cart
+    if (cart.quantity === 0) {
+      await cart.destroy();
+      return res.status(200).json({ message: "Cart deleted successfully" });
+    }
+
     await cart.save();
     res.status(200).json({ message: "Cart updated successfully", cart });
   } catch (error) {

@@ -2,6 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database.js");
 const User = require("./User.js");
 const Cart = require("./Cart.js");
+const Transaction = require("./Transaction.js");
 
 const Product = sequelize.define(
   "Product",
@@ -54,13 +55,5 @@ const Product = sequelize.define(
     timestamps: false, // Disable Sequelize's automatic timestamps (createdAt, updatedAt)
   }
 );
-
-Cart.belongsTo(Product, { foreignKey: "product_id" });
-Product.hasMany(Cart, { foreignKey: "product_id" });
-
-// Product.associate = (models) => {
-//   Product.hasMany(models.Cart, { foreignKey: "product_id" });
-//   Product.belongsTo(models.User, { foreignKey: "user_id" });
-// };
 
 module.exports = Product;
