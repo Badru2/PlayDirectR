@@ -6,16 +6,8 @@ import { showFormatRupiah } from "../../components/themes/format-rupiah";
 import { addToCart } from "../../store/cartSlice";
 import { useAuth } from "../../hooks/useAuth";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-
 // Import Swiper styles
 import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/navigation";
-import "swiper/css/thumbs";
-
-// import required modules
-import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 
 const DetailProduct = () => {
   const { user } = useAuth();
@@ -25,7 +17,7 @@ const DetailProduct = () => {
   const product = useSelector((state) => state.products.products);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
-  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const [currentSlide, setCurrentSlide] = useState(0); // State to track current slide
 
   useEffect(() => {
     dispatch(detailProduct(productId)).then(() => setLoading(false));
@@ -54,55 +46,50 @@ const DetailProduct = () => {
   const productData = product?.product || {};
   const images = productData.images || [];
 
+  const handleSlideChange = (index) => {
+    setCurrentSlide(index); // Update current slide
+  };
+
   return (
     <div>
       {loading ? (
         <div>Loading...</div>
       ) : (
         <div className="flex max-w-[1440px] mx-auto mt-4 gap-2 p-4">
-          <div className="max-w-[400px]">
-            <div className="bg-white shadow-md col-span-2 sticky top-20">
-              <Swiper
-                style={{
-                  "--swiper-navigation-color": "#fff",
-                  "--swiper-pagination-color": "#fff",
-                }}
-                spaceBetween={10}
-                navigation={true}
-                thumbs={thumbsSwiper ? { swiper: thumbsSwiper } : undefined} // Safeguard
-                modules={[FreeMode, Navigation, Thumbs]}
-                className="mySwiper2"
-              >
-                {images.map((image, index) => (
-                  <SwiperSlide key={index}>
-                    <img
-                      src={"/public/images/products/" + image}
-                      alt={productData.name}
-                      className="w-[400px] h-[400px] object-contain"
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-              <div className="p-3">
-                <Swiper
-                  onSwiper={setThumbsSwiper}
-                  spaceBetween={10}
-                  slidesPerView={images.length}
-                  freeMode={true}
-                  watchSlidesProgress={true}
-                  modules={[FreeMode, Navigation, Thumbs]}
-                  className="flex justify-center items-center"
-                >
+          <div className="w-[400px]">
+            <div className="relative w-full">
+              <div className="sticky top-16 bg-white shadow-md py-3">
+                <div className="carousel w-full">
                   {images.map((image, index) => (
-                    <SwiperSlide key={index}>
+                    <div
+                      key={index}
+                      className={`carousel-item inset-0 w-full sticky transition-opacity duration-500 ${
+                        index === currentSlide ? "opacity-100" : "opacity-0"
+                      }`}
+                    >
                       <img
-                        src={"/public/images/products/" + image}
+                        src={`/public/images/products/${image}`}
                         alt={productData.name}
-                        className="w-[50px] h-[50px] object-cover cursor-pointer"
+                        className="w-full object-contain max-h-80"
                       />
-                    </SwiperSlide>
+                    </div>
                   ))}
-                </Swiper>
+                </div>
+                <div className="flex w-full justify-center gap-2 py-2 bottom-0 sticky flex-wrap overflow-y-auto max-h-[153px]">
+                  {images.map((image, index) => (
+                    <img
+                      key={index}
+                      src={`/public/images/products/${image}`}
+                      alt={productData.name}
+                      className={`w-16 h-16 object-cover rounded-md cursor-pointer ${
+                        index === currentSlide
+                          ? "border-2 border-blue-500"
+                          : "border-2 border-transparent"
+                      }`}
+                      onClick={() => handleSlideChange(index)} // Set the clicked thumbnail as the current slide
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -177,11 +164,11 @@ const DetailProduct = () => {
                     </div>
                   </div>
                   <button
-                    disabled={productData.quantity == 0}
+                    disabled={productData.quantity <= 0}
                     type="submit"
                     className={
                       "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm w-full " +
-                      (productData.quantity == 0
+                      (productData.quantity <= 0
                         ? "cursor-not-allowed opacity-50"
                         : "")
                     }

@@ -38,8 +38,12 @@ const ProductPage = () => {
     category: "",
   });
 
+  const fetchProduct = async () => {
+    await dispatch(getProducts(), setLoading(false));
+  };
+
   useEffect(() => {
-    dispatch(getProducts(), setLoading(false));
+    fetchProduct();
     dispatch(getUser());
     setLoading(false);
   }, [dispatch]);
@@ -57,15 +61,17 @@ const ProductPage = () => {
 
     // Append images
     files.forEach((fileItem) => {
-      formData.append("images", fileItem.file); // Get the actual file from the FilePond file object
+      formData.append("images", fileItem.file);
     });
 
     try {
       if (product.id) {
         dispatch(updateProduct({ id: product.id, product: formData }));
       } else {
-        console.log(formData);
-        dispatch(addProduct(formData));
+        dispatch(addProduct(formData)).then(() => {
+          // Re-fetch products after adding
+          fetchProduct();
+        });
       }
 
       // Reset form
@@ -80,9 +86,7 @@ const ProductPage = () => {
         category: "",
       });
 
-      setLoading(false);
       setFiles([]);
-      dispatch(getProducts());
     } catch (error) {
       console.log(error);
     }
@@ -202,27 +206,53 @@ const ProductPage = () => {
           <div className="pt-3 space-y-3">
             {products ? (
               products.map((product) => (
-                <div key={product.id} className="bg-white p-3 shadow-md">
-                  <p>Name: {product.name}</p>
-                  <p>User ID: {product.user_id}</p>
-                  <p>Description: {product.description}</p>
-                  <p>Price: {showFormatRupiah(product.price)}</p>
-                  <p>Quantity: {product.quantity}</p>
-                  <p>Category: {product.category}</p>
-                  <button
-                    onClick={() => handleEdit(product)}
-                    className="bg-yellow-300"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => {
-                      handleDelete(product.id);
-                    }}
-                    className="bg-red-300"
-                  >
-                    Delete
-                  </button>
+                <div
+                  key={product.id}
+                  className="bg-white p-3 shadow-md flex space-x-3"
+                >
+                  <div className="w-1/4">
+                    <img
+                      src={`/public/images/products/${product.images[0]}`}
+                      alt={product.name}
+                      className="w-full object-cover"
+                    />
+                  </div>
+
+                  <div className="w-3/4">
+                    <p>Name: {product.name}</p>
+                    <p>User ID: {product.user_id}</p>
+
+                    {product.description.length > 500 ? (
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: product.description.slice(0, 500) + "...",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: product.description,
+                        }}
+                      />
+                    )}
+                    <p>Price: {showFormatRupiah(product.price)}</p>
+                    <p>Quantity: {product.quantity}</p>
+                    <p>Category: {product.category}</p>
+                    <button
+                      onClick={() => handleEdit(product)}
+                      className="bg-yellow-300"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleDelete(product.id);
+                      }}
+                      className="bg-red-300"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ))
             ) : (

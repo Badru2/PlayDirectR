@@ -1,11 +1,13 @@
 import { useState, useEffect, useContext, createContext, useMemo } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // Initially user is null
   const [loading, setLoading] = useState(true); // Loading state to prevent premature redirects
+  const navigate = useNavigate();
 
   // Fetch the user profile from the backend after login or on app load
   useEffect(() => {
@@ -54,6 +56,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await axios.post("/api/auth/logout");
       setUser(null); // Clear the user state on logout
+      navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
     }

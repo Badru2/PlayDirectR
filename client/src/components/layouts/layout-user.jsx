@@ -31,12 +31,12 @@ const UserLayout = () => {
               <div tabIndex={0} role="button" className="">
                 <img
                   src={
-                    user.avatar
-                      ? `/public/images/avatars/${user.avatar}`
-                      : `https://ui-avatars.com/api/?name=${user.username}` ||
+                    user?.avatar
+                      ? `/public/images/avatars/${user?.avatar}`
+                      : `https://ui-avatars.com/api/?name=${user?.username}` ||
                         `https://ui-avatars.com/api/?name=Anonymous`
                   }
-                  alt={user.username}
+                  alt={user?.username}
                   className="w-9 h-9 object-cover rounded-full"
                 />
               </div>
@@ -50,12 +50,21 @@ const UserLayout = () => {
                   </Link>
                 </li>
                 <li>
-                  <button
-                    onClick={logout}
-                    className="bg-red-500 text-white text-center w-full"
-                  >
-                    Logout
-                  </button>
+                  {user ? (
+                    <button
+                      onClick={logout}
+                      className="bg-red-500 text-white text-center w-full"
+                    >
+                      Logout
+                    </button>
+                  ) : (
+                    <Link
+                      to={"/login"}
+                      className="bg-blue-500 text-white text-center w-full"
+                    >
+                      Login
+                    </Link>
+                  )}
                 </li>
               </ul>
             </div>

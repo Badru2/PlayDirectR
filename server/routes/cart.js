@@ -8,40 +8,48 @@ router.post("/add", async (req, res) => {
   const { user_id, product_id, quantity } = req.body;
 
   try {
-    const existingCart = await Cart.findOne({ where: { user_id, product_id } });
+    // Find the product to check stock availability
+    const product = await Product.findByPk(product_id);
 
-    // limit by product quantity
-    if (
-      existingCart &&
-      existingCart.quantity >= Product.findById(product_id).quantity
-    ) {
-      res.status(400).json({ message: "Cart limit reached" });
-      return;
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
     }
 
-    console.log(req.body);
+    const existingCart = await Cart.findOne({ where: { user_id, product_id } });
+
+    // Check if adding more quantity exceeds the available stock
+    const totalQuantity = existingCart
+      ? existingCart.quantity + quantity
+      : quantity;
+    if (totalQuantity > product.quantity) {
+      return res
+        .status(400)
+        .json({ message: "Cart limit reached, not enough stock" });
+    }
+
     if (existingCart) {
-      const updatedCart = await Cart.update(
-        { quantity: existingCart.quantity + quantity },
-        { where: { user_id, product_id } }
-      );
-      res
+      // Update the existing cart item
+      existingCart.quantity += quantity;
+      await existingCart.save();
+
+      return res
         .status(200)
-        .json({ message: "Cart updated successfully", updatedCart });
-      return;
+        .json({ message: "Cart updated successfully", cart: existingCart });
     } else {
-      console.log(req.body);
+      // Create a new cart item
       const cart = await Cart.create({
         user_id,
         product_id,
         quantity,
-        // createdAt: new Date(),
-        // updatedAt: new Date(),
       });
-      res.status(201).json({ message: "Cart created successfully", cart });
+
+      return res
+        .status(201)
+        .json({ message: "Cart created successfully", cart });
     }
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    console.error(error);
+    return res.status(500).json({ message: "Server error", error });
   }
 });
 
@@ -75,6 +83,14 @@ router.put("/update/:id", async (req, res) => {
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }
+
+    // limit by product quantity
+    const product = await Product.findByPk(cart.product_id);
+    if (quantity > product.quantity) {
+      res.status(400).json({ message: "Cart limit reached" });
+      return;
+    }
+
     cart.quantity = quantity;
 
     // if 0 quantity, delete cart

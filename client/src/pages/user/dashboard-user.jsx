@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom"; // Add useNavigate
 import { useDispatch, useSelector } from "react-redux";
 
 import { getUser } from "../../store/authSlice";
@@ -43,9 +42,11 @@ const ProductGrid = ({ products, handleAddToCart, carts, user }) => {
             </div>
 
             <button
+              disabled={product.quantity <= 0}
               className={
                 "w-full bg-blue-600 text-white text-center py-2 rounded-b-md rounded-none absolute z-10 " +
-                (isHovered ? "block" : "hidden")
+                (isHovered ? "block " : "hidden ") +
+                (product.quantity <= 0 ? "opacity-50 cursor-not-allowed " : "")
               }
               onClick={(e) => handleAddToCart(product.id)}
             >
@@ -60,6 +61,7 @@ const ProductGrid = ({ products, handleAddToCart, carts, user }) => {
 
 const UserDashboard = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Add useNavigate for redirection
   const products = useSelector((state) => state.products.products.products);
   const carts = useSelector((state) => state.cart);
   const user = useSelector((state) => state.auth.user);
@@ -70,15 +72,12 @@ const UserDashboard = () => {
     const fetchData = async () => {
       setLoading(true);
 
-      // Fetch user first and wait for it to complete
-      const userAction = await dispatch(getUser()).unwrap();
-
-      // Now fetch products
+      // Fetch products without depending on user authentication
       await dispatch(getProducts());
 
-      // If the user is successfully fetched, get their cart
-      if (userAction && userAction.user) {
-        const userId = userAction.user.id;
+      // Optionally fetch the user and cart if authenticated
+      if (user && user.user) {
+        const userId = user.user.id;
         await dispatch(getCart(userId));
       }
 
@@ -86,7 +85,7 @@ const UserDashboard = () => {
     };
 
     fetchData();
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   useEffect(() => {
     if (products && products.length > 0) {
@@ -103,8 +102,9 @@ const UserDashboard = () => {
   }, [products, carts]);
 
   const handleAddToCart = async (productId) => {
-    if (!user.user) {
-      console.error("User not found");
+    if (!user || !user.user) {
+      // If the user is not authenticated, redirect them to the login page
+      navigate("/login");
       return;
     }
 
@@ -125,7 +125,7 @@ const UserDashboard = () => {
   };
 
   return (
-    <div>
+    <div className="px-3">
       {loading ? (
         <div>Loading...</div>
       ) : (

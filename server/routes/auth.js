@@ -12,6 +12,7 @@ const SECRET_KEY =
 // Registration
 router.post("/register", async (req, res) => {
   const { username, email, password, role } = req.body;
+  console.log(req.body);
 
   try {
     const existingUser = await User.findOne({ where: { email } });
@@ -86,6 +87,52 @@ router.get("/profile", authMiddleware, (req, res) => {
       role,
     },
   });
+});
+
+router.get("/get/admin", async (req, res) => {
+  try {
+    const admins = await User.findAll({ where: { role: "admin" } });
+    res.status(200).json(admins);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
+router.get("/get/users", async (req, res) => {
+  try {
+    const users = await User.findAll();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
+router.delete("/delete/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const deletedUser = await User.destroy({ where: { id } });
+    res.status(200).json({ message: "User deleted successfully", deletedUser });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
+router.put("/update/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { username, email, password, role } = req.body;
+    console.log(req.body);
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const updatedUser = await User.update(
+      { username, email, password: hashedPassword, role },
+      { where: { id } }
+    );
+    res.status(200).json({ message: "User updated successfully", updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
 });
 
 module.exports = router;

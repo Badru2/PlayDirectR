@@ -12,6 +12,7 @@ export const addToCart = createAsyncThunk(
   "cart/addToCart",
   async (formData, { rejectWithValue }) => {
     try {
+      console.log(formData);
       const response = await axios.post(`/api/cart/add`, formData);
 
       console.log(response.data);
@@ -25,10 +26,16 @@ export const addToCart = createAsyncThunk(
 export const updateCart = createAsyncThunk(
   "cart/updateCart",
   async ({ cartId, quantity }) => {
-    const response = await axios.put(`/api/cart/update/${cartId}`, {
-      quantity,
-    });
-    return response.data;
+    try {
+      const response = await axios.put(`/api/cart/update/${cartId}`, {
+        quantity,
+      });
+
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating cart:", error);
+    }
   }
 );
 

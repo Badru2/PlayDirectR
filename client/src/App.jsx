@@ -34,22 +34,27 @@ const App = () => {
           <AuthProvider>
             <Routes>
               {/* Public Routes */}
-              <Route element={<UnauthLayout />}>
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
+              <Route element={<RequireAuth publicPage={true} />}>
+                <Route element={<UnauthLayout />}>
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+                </Route>
+              </Route>
+
+              <Route element={<UserLayout />}>
+                <Route path="/" element={<UserDashboard />} />
+                <Route path="detail" element={<DetailProduct />} />
               </Route>
 
               {/* User Protected Routes */}
               <Route
                 element={
                   <RequireAuth
-                    allowedRoles={["user", "admin", "super-admin"]}
+                    allowedRoles={["user", !"admin", !"superAdmin"]}
                   />
                 }
               >
                 <Route path="/" element={<UserLayout />}>
-                  <Route path="" element={<UserDashboard />} />
-                  <Route path="detail" element={<DetailProduct />} />
                   <Route path="cart" element={<CartPage />} />
                   <Route path="transaction" element={<UserTransaction />} />
                   <Route
@@ -69,7 +74,7 @@ const App = () => {
               </Route>
 
               {/* Super Admin Protected Routes */}
-              <Route element={<RequireAuth allowedRoles={["super-admin"]} />}>
+              <Route element={<RequireAuth allowedRoles={["superAdmin"]} />}>
                 <Route path="super-admin" element={<SuperAdminLayout />}>
                   <Route path="dashboard" element={<SuperAdminDashboard />} />
                   <Route path="admin" element={<AdminCRUD />} />
