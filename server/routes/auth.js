@@ -5,6 +5,37 @@ const jwt = require("jsonwebtoken");
 const authMiddleware = require("../middlewares/authMiddleware");
 const User = require("../models/User");
 const router = express.Router();
+const path = require("path");
+const multer = require("multer");
+
+// Set up multer for file upload (e.g., avatar)
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "../public/images/avatars"));
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname); // unique file name
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 1024 * 1024 * 5 }, // 5MB file size limit
+  fileFilter: (req, file, cb) => {
+    // Check file type
+    const filetypes = /jpeg|webp|svg|jpg|png/;
+    const extname = filetypes.test(
+      path.extname(file.originalname).toLowerCase()
+    );
+    const mimetype = filetypes.test(file.mimetype);
+
+    if (extname && mimetype) {
+      return cb(null, true);
+    } else {
+      cb(new Error("Images only! (jpg, jpeg, png)"));
+    }
+  },
+});
 
 const SECRET_KEY =
   "7f81798c58db2a591185ef8b098fae196fb791454237a2a370f7f938450f3ed2";
@@ -76,7 +107,7 @@ router.post("/logout", (req, res) => {
 
 router.get("/profile", authMiddleware, (req, res) => {
   // Access user data from req.user
-  const { id, email, username, role } = req.user;
+  const { id, email, username, role, avatar, address } = req.user;
 
   res.status(200).json({
     message: "User profile retrieved successfully",
@@ -85,8 +116,20 @@ router.get("/profile", authMiddleware, (req, res) => {
       email,
       username,
       role,
+      avatar,
+      address,
     },
   });
+});
+
+router.get("/profile/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const user = await User.findOne({ where: { id } });
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
 });
 
 router.get("/get/admin", async (req, res) => {
@@ -117,20 +160,41 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
-router.put("/update/:id", async (req, res) => {
+router.put("/update/:id", upload.single("avatar"), async (req, res) => {
   try {
     const id = req.params.id;
-    const { username, email, password, role } = req.body;
-    console.log(req.body);
+    const { username, email, password, role, address } = req.body;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
+    // If password is provided, hash it
+    let hashedPassword;
+    if (password) {
+      hashedPassword = await bcrypt.hash(password, 10);
+    }
+
+    // If an avatar file is uploaded, its path will be stored in req.file
+    const avatar = req.file ? `${req.file.filename}` : undefined;
+
+    // Update the user information
     const updatedUser = await User.update(
-      { username, email, password: hashedPassword, role },
+      {
+        username: username || user.username,
+        email: email || user.email,
+        password: hashedPassword || undefined, // don't update if no new password
+        role: role || user.role,
+        avatar: avatar || user.avatar, // don't update if no avatar uploaded
+        address: address || user.address,
+      },
       { where: { id } }
     );
+
     res.status(200).json({ message: "User updated successfully", updatedUser });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Server error", error });
   }
 });

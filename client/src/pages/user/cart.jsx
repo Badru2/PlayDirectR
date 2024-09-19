@@ -203,7 +203,7 @@ const CartPage = () => {
           </div>
 
           <div className="w-1/4 ">
-            <div className="bg-white shadow-md p-4 space-y-3">
+            <div className="bg-white shadow-md p-4 space-y-3 sticky top-16">
               <div className="flex justify-between font-bold text-xl">
                 Total: <span>{showFormatRupiah(totalPrice)}</span>
               </div>

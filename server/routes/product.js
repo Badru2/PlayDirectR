@@ -2,6 +2,7 @@ const express = require("express");
 const Product = require("../models/Product");
 const multer = require("multer");
 const path = require("path");
+const { Op } = require("sequelize");
 
 const router = express.Router();
 
@@ -117,6 +118,29 @@ router.put("/update/:id", async (req, res) => {
     // Save the updated product
     await product.save();
     res.status(200).json({ message: "Product updated successfully", product });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
+router.get("/search", async (req, res) => {
+  const { productName } = req.query;
+
+  if (!productName) {
+    return res.status(400).json({ message: "Product Name is required fields" });
+  }
+
+  try {
+    const products = await Product.findAll({
+      where: {
+        name: {
+          [Op.iLike]: `%${productName}%`,
+        },
+      },
+    });
+    res
+      .status(200)
+      .json({ message: "Products retrieved successfully", products });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }

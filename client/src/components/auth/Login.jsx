@@ -39,7 +39,7 @@ const Login = () => {
       //   navigate("/");
       // }
       window.location.reload();
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       alert(error.response?.data?.message || "An error occurred.");
     }

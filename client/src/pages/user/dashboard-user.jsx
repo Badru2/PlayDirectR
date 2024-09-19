@@ -18,7 +18,7 @@ const ProductGrid = ({ products, handleAddToCart, carts, user }) => {
         return (
           <div
             key={product.id}
-            className="bg-white shadow-md hover:transition-transform hover:scale-105 hover:shadow-2xl duration-300 relative rounded-t-md"
+            className="bg-white shadow-md hover:transition-transform hover:scale-105 hover:shadow-2xl hover:z-10 duration-300 relative rounded-t-md"
             onMouseEnter={() => setHoveredProductId(product.id)}
             onMouseLeave={() => setHoveredProductId(null)}
           >
@@ -26,7 +26,7 @@ const ProductGrid = ({ products, handleAddToCart, carts, user }) => {
               <img
                 src={"/public/images/products/" + product.images[0]}
                 alt={product.name}
-                className="h-40 lg:h-56 object-cover w-full object-top"
+                className="h-80 md:h-720 lg:h-56 object-cover w-full object-top rounded-t-md"
               />
             </Link>
             <div className="p-2 space-y-3">
@@ -62,7 +62,7 @@ const ProductGrid = ({ products, handleAddToCart, carts, user }) => {
 const UserDashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Add useNavigate for redirection
-  const products = useSelector((state) => state.products.products.products);
+  const products = useSelector((state) => state.products.products);
   const carts = useSelector((state) => state.cart);
   const user = useSelector((state) => state.auth.user);
   const [loading, setLoading] = useState(true);
@@ -93,7 +93,7 @@ const UserDashboard = () => {
         return new Date(b.created_at) - new Date(a.created_at);
       });
 
-      const limitedProducts = sorted.slice(0, 10);
+      const limitedProducts = sorted.slice(0, 12);
 
       setSortedProducts(limitedProducts);
     }

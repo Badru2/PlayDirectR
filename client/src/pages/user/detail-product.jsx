@@ -14,7 +14,7 @@ const DetailProduct = () => {
   const dispatch = useDispatch();
   const search = useLocation().search;
   const productId = new URLSearchParams(search).get("productId");
-  const product = useSelector((state) => state.products.products);
+  const product = useSelector((state) => state);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [currentSlide, setCurrentSlide] = useState(0); // State to track current slide
@@ -43,7 +43,7 @@ const DetailProduct = () => {
   };
 
   // Safeguard check for product and images array
-  const productData = product?.product || {};
+  const productData = product?.products?.productDetail || {};
   const images = productData.images || [];
 
   const handleSlideChange = (index) => {
@@ -57,8 +57,8 @@ const DetailProduct = () => {
       ) : (
         <div className="flex max-w-[1440px] mx-auto mt-4 gap-2 p-4">
           <div className="w-[400px]">
-            <div className="relative w-full">
-              <div className="sticky top-16 bg-white shadow-md py-3">
+            <div className="sticky top-16 bg-white shadow-md py-3">
+              <div className="relative w-full">
                 <div className="carousel w-full">
                   {images.map((image, index) => (
                     <div
@@ -109,7 +109,7 @@ const DetailProduct = () => {
           </div>
 
           <div className="w-1/4">
-            <div className="p-4 space-y-3 bg-white shadow-md sticky top-20">
+            <div className="p-4 space-y-3 bg-white shadow-md sticky top-16">
               {images[0] && (
                 <div className="flex items-center space-x-3">
                   <img

@@ -4,7 +4,9 @@ import axios from "axios";
 // Thunk for getting all products
 export const getProducts = createAsyncThunk("product/getProducts", async () => {
   const response = await axios.get("/api/product/show");
-  return response.data;
+
+  console.log("this is the response", response.data.products);
+  return response.data.products;
 });
 
 // Thunk for getting a single product
@@ -15,8 +17,8 @@ export const detailProduct = createAsyncThunk(
       `/api/product/detail?productId=${productId}`
     );
 
-    console.log(response.data);
-    return response.data;
+    console.log("Fetching Detail Product: ", response.data.product);
+    return response.data.product;
   }
 );
 
@@ -37,11 +39,18 @@ export const addProduct = createAsyncThunk(
 export const updateProduct = createAsyncThunk(
   "product/updateProduct",
   async ({ id, formData }) => {
-    const response = await axios.put(`/api/product/update/${id}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    console.log("Going to update", id, formData);
+    const response = await axios.put(
+      `/api/product/update/${id}`,
+      { formData },
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    // console.log("Going to update", response.data);
     return response.data;
   }
 );
@@ -58,7 +67,8 @@ export const deleteProduct = createAsyncThunk(
 const productSlice = createSlice({
   name: "products",
   initialState: {
-    products: [], // Ensure this is initialized as an array
+    products: [], // Ensure this is an array
+    productDetail: null, // Separate field for detailed product
     status: "idle",
     error: null,
   },
@@ -69,7 +79,8 @@ const productSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getProducts.fulfilled, (state, action) => {
-        state.products = action.payload;
+        state.products = Array.isArray(action.payload) ? action.payload : []; // Ensure payload is an array
+        console.log("this is the response", state.products);
         state.status = "succeeded";
       })
       .addCase(getProducts.rejected, (state, action) => {
@@ -80,8 +91,9 @@ const productSlice = createSlice({
         state.status = "loading";
       })
       .addCase(detailProduct.fulfilled, (state, action) => {
-        state.products = action.payload;
+        state.productDetail = action.payload;
         state.status = "succeeded";
+        console.log("Detail Product", state.productDetail);
       })
       .addCase(detailProduct.rejected, (state, action) => {
         state.status = "failed";
@@ -94,7 +106,7 @@ const productSlice = createSlice({
         if (Array.isArray(state.products)) {
           state.products.push(action.payload);
         } else {
-          state.products = [action.payload]; // Reset if somehow it was not an array
+          state.products = [action.payload];
         }
         state.status = "succeeded";
       })
@@ -106,7 +118,6 @@ const productSlice = createSlice({
         state.status = "loading";
       })
       .addCase(updateProduct.fulfilled, (state, action) => {
-        console.log(state.products); // Debug to see what the structure is
         if (Array.isArray(state.products)) {
           const index = state.products.findIndex(
             (product) => product.id === action.payload.id
@@ -127,12 +138,12 @@ const productSlice = createSlice({
         state.status = "loading";
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
-        state.products = state.products.filter(
-          (product) => product.id !== action.payload // Using the id directly
-        );
         // if (Array.isArray(state.products)) {
+        state.products = state.products.filter(
+          (product) => product.id !== action.payload
+        );
         // } else {
-        //   console.error("Products state is not an array");
+        //   console.error("state.products is not an array");
         // }
         state.status = "succeeded";
       })

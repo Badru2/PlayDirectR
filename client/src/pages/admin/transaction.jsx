@@ -150,24 +150,26 @@ const AdminTransaction = () => {
                         </div>
                       ))}
                     </div>
-                    <div className="flex space-x-3 self-end">
-                      <button
-                        onClick={() =>
-                          handleUpdateTransaction(transaction.id, "deliver")
-                        }
-                        className="bg-blue-500 text-white font-bold rounded-sm"
-                      >
-                        Deliver
-                      </button>
-                      <button
-                        onClick={() =>
-                          handleUpdateTransaction(transaction.id, "cancelled")
-                        }
-                        className="bg-red-500 text-white font-bold rounded-sm"
-                      >
-                        Cancel
-                      </button>
-                    </div>
+                    {transaction.status === "pending" && (
+                      <div className="flex space-x-3 self-end">
+                        <button
+                          onClick={() =>
+                            handleUpdateTransaction(transaction.id, "deliver")
+                          }
+                          className="bg-blue-500 text-white font-bold rounded-sm"
+                        >
+                          Deliver
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleUpdateTransaction(transaction.id, "cancelled")
+                          }
+                          className="bg-red-500 text-white font-bold rounded-sm"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

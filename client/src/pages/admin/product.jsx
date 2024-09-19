@@ -22,7 +22,7 @@ import { showFormatRupiah } from "../../components/themes/format-rupiah";
 
 const ProductPage = () => {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.products.products.products); // Ensure state path is correct
+  const products = useSelector((state) => state.products.products); // Ensure state path is correct
   const user = useSelector((state) => state.auth.user);
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,6 +48,26 @@ const ProductPage = () => {
     setLoading(false);
   }, [dispatch]);
 
+  const handleEdit = (product) => {
+    setProduct({
+      id: product.id,
+      name: product.name,
+      user_id: product.user_id,
+      description: product.description,
+      price: product.price,
+      quantity: product.quantity,
+      category: product.category,
+    }); // Pre-fill form for editing
+    setFiles(
+      product.images.map((image) => ({
+        source: `/public/images/products/${image}`,
+        options: { type: "local" },
+      }))
+    );
+
+    dispatch(getProducts());
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -64,9 +84,19 @@ const ProductPage = () => {
       formData.append("images", fileItem.file);
     });
 
+    // Log FormData for debugging
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ": " + pair[1]);
+    }
+
+    console.log("Updating product:", formData);
     try {
       if (product.id) {
-        dispatch(updateProduct({ id: product.id, product: formData }));
+        dispatch(updateProduct({ id: product.id, formData })).then(() => {
+          setLoading(true);
+          // Re-fetch products after updating
+          fetchProduct();
+        });
       } else {
         dispatch(addProduct(formData)).then(() => {
           // Re-fetch products after adding
@@ -90,12 +120,6 @@ const ProductPage = () => {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const handleEdit = (product) => {
-    setProduct(product); // Pre-fill form for editing
-
-    dispatch(getProducts());
   };
 
   const handleDelete = (id) => {
@@ -141,12 +165,12 @@ const ProductPage = () => {
                 onupdatefiles={setFiles}
                 allowMultiple={true}
                 allowReorder={true}
+                credits={true}
                 onChange={(e) =>
                   setProduct({ ...product, images: e.target.files })
                 }
                 labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                 className={""}
-                credits={false}
               />
             </div>
 
@@ -204,7 +228,8 @@ const ProductPage = () => {
           </form>
 
           <div className="pt-3 space-y-3">
-            {products ? (
+            {console.log("Products:", products)}
+            {products.length > 0 ? (
               products.map((product) => (
                 <div
                   key={product.id}
@@ -221,20 +246,19 @@ const ProductPage = () => {
                   <div className="w-3/4">
                     <p>Name: {product.name}</p>
                     <p>User ID: {product.user_id}</p>
-
-                    {product.description.length > 500 ? (
+                    {/* {product.description.length > 500 ? (
                       <div
                         dangerouslySetInnerHTML={{
                           __html: product.description.slice(0, 500) + "...",
                         }}
                       />
-                    ) : (
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: product.description,
-                        }}
-                      />
-                    )}
+                    ) : ( */}
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: product.description,
+                      }}
+                    />
+                    {/* )} */}
                     <p>Price: {showFormatRupiah(product.price)}</p>
                     <p>Quantity: {product.quantity}</p>
                     <p>Category: {product.category}</p>
@@ -245,9 +269,7 @@ const ProductPage = () => {
                       Edit
                     </button>
                     <button
-                      onClick={() => {
-                        handleDelete(product.id);
-                      }}
+                      onClick={() => handleDelete(product.id)}
                       className="bg-red-300"
                     >
                       Delete

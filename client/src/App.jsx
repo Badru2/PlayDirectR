@@ -25,6 +25,7 @@ import UserTransaction from "./pages/user/transaction";
 import AdminTransaction from "./pages/admin/transaction";
 import DetailTransaction from "./pages/user/detail-transaction";
 import UnauthLayout from "./components/layouts/layout-unauth";
+import UserProfile from "./components/auth/Profile";
 
 const App = () => {
   return (
@@ -61,6 +62,7 @@ const App = () => {
                     path="transaction/detail"
                     element={<DetailTransaction />}
                   />
+                  <Route path="profile" element={<UserProfile />} />
                 </Route>
               </Route>
 

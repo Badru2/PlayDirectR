@@ -27,6 +27,11 @@ const Transaction = sequelize.define(
       allowNull: false,
       defaultValue: "pending",
     },
+    isDelete: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   },
   {
     timestamps: true,
