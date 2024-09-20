@@ -7,6 +7,7 @@ const cartRoutes = require("./routes/cart");
 const transactionRoutes = require("./routes/transaction");
 const wishlistRoutes = require("./routes/wishlist");
 const userRoutes = require("./routes/user");
+const carouselRoutes = require("./routes/carousel");
 
 const path = require("path");
 
@@ -14,8 +15,9 @@ const path = require("path");
 const Product = require("./models/Product.js");
 const Cart = require("./models/Cart.js");
 const Transaction = require("./models/Transaction.js");
-const { Wishlist } = require("./models/Wishlist.js");
+const Wishlist = require("./models/Wishlist.js");
 const User = require("./models/User.js");
+const Carousel = require("./models/Carousel.js");
 
 const app = express();
 app.use(express.json());
@@ -29,6 +31,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/transaction", transactionRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/carousel", carouselRoutes);
 
 User.hasMany(Transaction, { foreignKey: "user_id" });
 User.hasMany(Product, { foreignKey: "user_id" });

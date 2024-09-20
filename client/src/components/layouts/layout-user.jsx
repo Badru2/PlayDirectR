@@ -20,7 +20,7 @@ const UserLayout = () => {
       setProfile(response.data);
     } catch (error) {
       console.error("Error fetching profile:", error);
-      setUser(null);
+      setProfile(null);
     }
   };
 
@@ -59,6 +59,7 @@ const UserLayout = () => {
 
   useEffect(() => {
     fetchProfile();
+    console.log("this is user id");
   }, []);
 
   return (
@@ -91,7 +92,7 @@ const UserLayout = () => {
                 type="text"
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
-                className="w-full text-black border-gray-300 rounded-md ps-9 py-2"
+                className="w-full text-black border-gray-300 rounded-md ps-9 py-2 focus:outline-none appearance-none"
                 placeholder="Search Product"
               />
             </div>

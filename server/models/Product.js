@@ -40,6 +40,16 @@ const Product = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    clicked: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    isDelete: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,

@@ -21,20 +21,20 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   limits: { fileSize: 1024 * 1024 * 5 }, // 5MB file size limit
-  fileFilter: (req, file, cb) => {
-    // Check file type
-    const filetypes = /jpeg|webp|svg|jpg|png/;
-    const extname = filetypes.test(
-      path.extname(file.originalname).toLowerCase()
-    );
-    const mimetype = filetypes.test(file.mimetype);
+  // fileFilter: (req, file, cb) => {
+  //   // Check file type
+  //   const filetypes = /jpeg|webp|svg|jpg|png/;
+  //   const extname = filetypes.test(
+  //     path.extname(file.originalname).toLowerCase()
+  //   );
+  //   const mimetype = filetypes.test(file.mimetype);
 
-    if (extname && mimetype) {
-      return cb(null, true);
-    } else {
-      cb(new Error("Images only! (jpg, jpeg, png)"));
-    }
-  },
+  //   if (extname && mimetype) {
+  //     return cb(null, true);
+  //   } else {
+  //     cb(new Error("Images only! (jpg, jpeg, png)"));
+  //   }
+  // },
 });
 
 const SECRET_KEY =

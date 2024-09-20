@@ -36,6 +36,7 @@ const UserProfile = () => {
       const response = await axios.put("/api/auth/update/" + user.id, formData);
       setProfile(response.data);
       setLoading(true);
+      console.log("Profile updated successfully:", response.data);
       fetchProfile();
       setError(null); // Clear error on success
     } catch (error) {
@@ -46,9 +47,9 @@ const UserProfile = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    // if (file) {
-    //   setProfile((prevProfile) => ({ ...prevProfile, avatar: file }));
-    // }
+    if (file) {
+      setProfile((prevProfile) => ({ ...prevProfile, avatar: file }));
+    }
   };
 
   useEffect(() => {
@@ -64,7 +65,12 @@ const UserProfile = () => {
           <div className="w-1/3">
             <div className="flex flex-col space-y-4 bg-white p-4 shadow-md">
               <img
-                src={`/public/images/avatars/${profile?.avatar}`}
+                src={
+                  profile?.avatar
+                    ? `/public/images/avatars/${profile?.avatar}`
+                    : `https://ui-avatars.com/api/?name=${profile?.username}` ||
+                      `https://ui-avatars.com/api/?name=Anonymous`
+                }
                 alt={profile?.username}
                 className="w-60 h-60 rounded-full object-cover self-center"
               />
@@ -132,16 +138,6 @@ const UserProfile = () => {
                     >
                       Address
                     </label>
-                    {/* <input
-                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      id="address"
-                      type="text"
-                      placeholder="Address"
-                      value={profile?.address || ""}
-                      onChange={(e) =>
-                        setProfile({ ...profile, address: e.target.value })
-                      }
-                    /> */}
 
                     <textarea
                       name="address"
@@ -164,6 +160,7 @@ const UserProfile = () => {
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       id="avatar"
                       type="file"
+                      accept="image/*"
                       onChange={handleFileChange}
                     />
                   </div>

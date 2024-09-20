@@ -19,20 +19,20 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   limits: { fileSize: 1024 * 1024 * 5 }, // 5MB file size limit
-  fileFilter: (req, file, cb) => {
-    // Check file type
-    const filetypes = /jpeg|webp|svg|jpg|png/;
-    const extname = filetypes.test(
-      path.extname(file.originalname).toLowerCase()
-    );
-    const mimetype = filetypes.test(file.mimetype);
+  // fileFilter: (req, file, cb) => {
+  //   // Check file type
+  //   const filetypes = /jpeg|webp|svg|jpg|png/;
+  //   const extname = filetypes.test(
+  //     path.extname(file.originalname).toLowerCase()
+  //   );
+  //   const mimetype = filetypes.test(file.mimetype);
 
-    if (extname && mimetype) {
-      return cb(null, true);
-    } else {
-      cb(new Error("Images only! (jpg, jpeg, png)"));
-    }
-  },
+  //   if (extname && mimetype) {
+  //     return cb(null, true);
+  //   } else {
+  //     cb(new Error("Images only! (jpg, jpeg, png)"));
+  //   }
+  // },
 });
 
 // Product creation route
@@ -96,24 +96,49 @@ router.get("/detail", async (req, res) => {
   }
 });
 
-router.put("/update/:id", async (req, res) => {
+router.get("/related", async (req, res) => {
+  const { category } = req.query;
+
+  try {
+    const products = await Product.findAll({
+      where: {
+        category: {
+          [Op.iLike]: `%${category}%`,
+        },
+      },
+    });
+    res
+      .status(200)
+      .json({ message: "Products retrieved successfully", products });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
+router.put("/update/:id", upload.array("images", 5), async (req, res) => {
   const id = req.params.id;
   const { name, user_id, description, price, quantity, category } = req.body;
 
   try {
-    // Update the product
+    // Find the product by ID
     const product = await Product.findByPk(id);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    // Update the product
+    // Update product details
     product.name = name || product.name;
     product.user_id = user_id || product.user_id;
     product.description = description || product.description;
     product.price = price || product.price;
     product.quantity = quantity || product.quantity;
     product.category = category || product.category;
+
+    // Update product images if any files are uploaded
+    if (req.files && req.files.length > 0) {
+      const imagePaths = req.files.map((file) => file.filename); // Store file names in the database
+      product.images = imagePaths; // Update the product's images field
+    }
 
     // Save the updated product
     await product.save();
