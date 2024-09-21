@@ -25,7 +25,7 @@ import UserTransaction from "./pages/user/transaction";
 import AdminTransaction from "./pages/admin/transaction";
 import DetailTransaction from "./pages/user/detail-transaction";
 import UnauthLayout from "./components/layouts/layout-unauth";
-import UserProfile from "./components/auth/Profile";
+import UserProfile from "./pages/user/profile";
 
 const App = () => {
   return (
@@ -51,7 +51,12 @@ const App = () => {
               <Route
                 element={
                   <RequireAuth
-                    allowedRoles={["user", !"admin", !"superAdmin"]}
+                    allowedRoles={[
+                      "user",
+                      !"adminSales",
+                      !"adminStorage",
+                      !"superAdmin",
+                    ]}
                   />
                 }
               >
@@ -67,7 +72,7 @@ const App = () => {
               </Route>
 
               {/* Admin Protected Routes */}
-              <Route element={<RequireAuth allowedRoles={["admin"]} />}>
+              <Route element={<RequireAuth allowedRoles={["adminSales"]} />}>
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route path="dashboard" element={<AdminDashboard />} />
                   <Route path="product" element={<ProductPage />} />

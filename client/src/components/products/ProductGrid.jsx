@@ -6,7 +6,7 @@ const ProductGrid = ({ products, handleAddToCart, carts, user }) => {
   const [hoveredProductId, setHoveredProductId] = useState(null);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-6 gap-4">
       {products.map((product) => {
         const isHovered = hoveredProductId === product.id;
 
@@ -21,7 +21,7 @@ const ProductGrid = ({ products, handleAddToCart, carts, user }) => {
               <img
                 src={"/public/images/products/" + product.images[0]}
                 alt={product.name}
-                className="h-80 md:h-720 lg:h-56 object-cover w-full object-top rounded-t-md"
+                className="h-48 md:h-72 lg:h-56 object-cover w-full object-top rounded-t-md"
               />
             </Link>
             <div className="p-2 space-y-3">
@@ -43,7 +43,9 @@ const ProductGrid = ({ products, handleAddToCart, carts, user }) => {
                 (isHovered ? "block " : "hidden ") +
                 (product.quantity <= 0 ? "opacity-50 cursor-not-allowed " : "")
               }
-              onClick={(e) => handleAddToCart(product.id)}
+              onClick={(e) =>
+                handleAddToCart(e, { productId: product.id, quantity: 1 })
+              }
             >
               Add To Cart
             </button>

@@ -28,6 +28,8 @@ registerPlugin(
 import { showFormatRupiah } from "../../components/themes/format-rupiah";
 import axios from "axios";
 
+import Toast from "../../components/themes/alert";
+
 const ProductPage = () => {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.products); // Ensure state path is correct
@@ -132,7 +134,10 @@ const ProductPage = () => {
           }
         );
 
-        setLoading(true);
+        Toast.fire({
+          icon: "success",
+          title: "Product updated successfully",
+        });
         console.log("Updating product:", response.data);
         fetchProduct();
 
@@ -143,6 +148,11 @@ const ProductPage = () => {
       } else {
         dispatch(addProduct(formData)).then(() => {
           fetchProduct();
+        });
+
+        Toast.fire({
+          icon: "success",
+          title: "Product added successfully",
         });
       }
 
@@ -207,6 +217,7 @@ const ProductPage = () => {
                   onupdatefiles={setFiles}
                   allowMultiple={true}
                   allowReorder={true}
+                  maxFiles={4}
                   credits={true}
                   labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                 />

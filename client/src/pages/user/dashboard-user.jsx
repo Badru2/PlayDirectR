@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../../store/productSlice";
-import { getCart, addToCart } from "../../store/cartSlice";
+import { addToCart, getCart } from "../../store/cartSlice";
 import ProductGrid from "../../components/products/ProductGrid";
 import axios from "axios";
+import Toast from "../../components/themes/alert";
+import { getUser } from "../../store/authSlice";
 
 const UserDashboard = () => {
   const dispatch = useDispatch();
@@ -18,8 +20,21 @@ const UserDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [sortedProducts, setSortedProducts] = useState([]);
 
+  const fetchUserData = async () => {
+    // Assuming you have an action to fetch user data if it's not available
+    if (!user || !user.user) {
+      // Fetch the user first, assuming there's an action for fetching user details
+      await dispatch(getUser());
+    }
+  };
+
   const fetchData = async () => {
     setLoading(true);
+
+    // Fetch user first
+    await fetchUserData();
+
+    // Fetch products and cart after user data is available
     await dispatch(getProducts());
 
     if (user && user.user) {
@@ -38,9 +53,8 @@ const UserDashboard = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData().then(() => setLoading(false));
     fetchCarousels();
-    setLoading(false);
   }, [dispatch, user]);
 
   useEffect(() => {
@@ -52,7 +66,9 @@ const UserDashboard = () => {
     }
   }, [products]);
 
-  const handleAddToCart = async (productId) => {
+  const handleAddToCart = async (e, { productId, quantity }) => {
+    e.preventDefault();
+
     if (!user || !user.user) {
       navigate("/login");
       return;
@@ -61,13 +77,25 @@ const UserDashboard = () => {
     const formData = {
       user_id: user.user.id,
       product_id: productId,
-      quantity: 1,
+      quantity: quantity,
     };
 
     try {
       const resultAction = await dispatch(addToCart(formData));
-      console.log("Added to cart successfully:", resultAction);
+
+      if (resultAction.type === "cart/addToCart/fulfilled") {
+        Toast.fire({
+          icon: "success",
+          title: "Added to Cart",
+        });
+      } else {
+        throw new Error("Failed to add to cart");
+      }
     } catch (error) {
+      Toast.fire({
+        icon: "error",
+        title: "Failed to add to cart",
+      });
       console.error("Error adding to cart:", error);
     }
   };
@@ -87,7 +115,7 @@ const UserDashboard = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       nextSlide(); // Automatically go to the next slide
-    }, 5000); // Change slide every 5 seconds (adjust as needed)
+    }, 15000); // Change slide every 15 seconds (adjust as needed)
 
     // Clean up the interval when the component unmounts
     return () => clearInterval(interval);
@@ -96,7 +124,25 @@ const UserDashboard = () => {
   return (
     <div className="px-3">
       {loading ? (
-        <div>Loading...</div>
+        <div className="space-y-3">
+          <div className="w-full h-96 animate-pulse bg-gray-500 rounded-lg flex justify-center items-center text-black " />
+
+          {/* Loop product loading */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+            {Array.from({ length: 12 }).map((_, index) => (
+              <div key={index}>
+                <div
+                  key={index}
+                  className="w-full h-80 lg:h-60 animate-pulse bg-gray-500 rounded-t-lg flex justify-center items-center text-black "
+                />
+                <div className="p-2 space-y-3 lg:h-16 animate-pulse bg-gray-500 rounded-b-lg">
+                  <div className="text-lg font-bold py-2 animate-pulse bg-gray-600 rounded-full" />
+                  <div className="text-lg font-bold py-2 w-1/2 animate-pulse bg-gray-600 rounded-full mt-6" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       ) : (
         <div className="pb-16">
           <div id="fade-carousel" className="relative w-full mb-4">
@@ -124,7 +170,7 @@ const UserDashboard = () => {
               className="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none bg-transparent"
               onClick={prevSlide} // Use prevSlide function
             >
-              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50  group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
                 <svg
                   className="w-4 h-4 text-white dark:text-gray-800"
                   aria-hidden="true"
@@ -150,7 +196,7 @@ const UserDashboard = () => {
               className="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none bg-transparent"
               onClick={nextSlide} // Use nextSlide function
             >
-              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30  group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
                 <svg
                   className="w-4 h-4 text-white dark:text-gray-800"
                   aria-hidden="true"
@@ -171,12 +217,17 @@ const UserDashboard = () => {
             </button>
           </div>
 
-          <ProductGrid
-            products={sortedProducts}
-            handleAddToCart={handleAddToCart}
-            carts={carts}
-            user={user}
-          />
+          <div>
+            <div className="text-2xl lg:text-3xl font-bold pb-4">
+              New On PlayDirect :
+            </div>
+            <ProductGrid
+              products={sortedProducts}
+              handleAddToCart={handleAddToCart}
+              carts={carts}
+              user={user}
+            />
+          </div>
         </div>
       )}
     </div>

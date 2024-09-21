@@ -58,8 +58,8 @@ const UserTransaction = () => {
           <div>Loading...</div>
         </div>
       ) : (
-        <div>
-          <div className="space-y-3 w-1/2 mx-auto">
+        <div className="mx-2 lg:mx-0">
+          <div className="space-y-3 w-full lg:w-1/2 mx-auto">
             {transactions.map(
               (
                 transaction // Map over transactions directly

@@ -23,7 +23,7 @@ const RequireAuth = ({ allowedRoles, publicPage }) => {
 
     if (user.role === "superAdmin") {
       return <Navigate to="/super-admin/dashboard" replace />;
-    } else if (user.role === "admin") {
+    } else if (user.role === "adminSales" || user.role === "adminStorage") {
       return <Navigate to="/admin/dashboard" replace />;
     } else if (user.role === "user") {
       return <Navigate to="/" replace />;

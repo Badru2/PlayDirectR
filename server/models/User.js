@@ -1,8 +1,5 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
-const Product = require("./Product");
-const Cart = require("./Cart");
-const Transaction = require("./Transaction");
 
 const User = sequelize.define(
   "User",
@@ -11,6 +8,10 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     email: {
       type: DataTypes.STRING,
@@ -37,7 +38,7 @@ const User = sequelize.define(
       allowNull: true,
     },
     role: {
-      type: DataTypes.ENUM("superAdmin", "admin", "user"),
+      type: DataTypes.ENUM("superAdmin", "adminSales", "adminStorage", "user"),
       defaultValue: "user",
     },
   },

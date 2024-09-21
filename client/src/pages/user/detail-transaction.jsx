@@ -43,8 +43,8 @@ const DetailTransaction = () => {
             <div>Loading...</div>
           </div>
         ) : (
-          <div>
-            <div className="space-y-3 w-1/2 mx-auto mb-5">
+          <div className="mx-2 lg:mx-0">
+            <div className="space-y-3 w-full lg:w-1/2 mx-auto mb-5">
               {transaction && (
                 <div
                   key={transaction.id}
@@ -68,7 +68,7 @@ const DetailTransaction = () => {
                     </div>
                   </div>
                   <div>
-                    <div>
+                    <div className="text-xl lg:text-lg">
                       Total Price: <b>{showFormatRupiah(transaction.total)}</b>
                     </div>
                   </div>
@@ -77,16 +77,16 @@ const DetailTransaction = () => {
                     {transaction.products.map((product) => (
                       <div
                         key={product.id}
-                        className="px-4 space-y-3 flex w-full justify-between border-t border-gray-500"
+                        className="px-4 space-y-3 flex flex-col-reverse lg:flex-row w-full justify-between border-t border-gray-500"
                       >
                         <div className="flex flex-col justify-between">
                           <div className="space-y-3 pt-4">
-                            <div className="text-2xl">
+                            <div className="text-xl lg:text-2xl">
                               <b>{product.product_name}</b>
                             </div>
 
                             <div>
-                              <div className="text-2xl">
+                              <div className="text-xl lg:text-2xl">
                                 <b>{showFormatRupiah(product.price)}</b>
                               </div>
                             </div>
@@ -109,7 +109,7 @@ const DetailTransaction = () => {
                         <img
                           src={`/public/images/products/${product.image}`}
                           alt={product.product_name}
-                          className="h-80  object-contain rounded-sm"
+                          className="h-80 w-full md:max-w-[150px] lg:max-w-[300px] object-contain rounded-sm"
                         />
                       </div>
                     ))}

@@ -11,6 +11,7 @@ import {
 } from "../../store/cartSlice";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import Toast from "../../components/themes/alert";
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -107,23 +108,54 @@ const CartPage = () => {
       );
       await dispatch(clearCart(user.user.id));
       await fetchCart(user.user.id);
+
+      Toast.fire({
+        icon: "success",
+        title: "Transaction created successfully",
+      });
     } catch (error) {
       console.error("Error creating transaction:", error);
+
+      Toast.fire({
+        icon: "error",
+        title: "Failed to create transaction",
+      });
     } finally {
       setCheckoutLoading(false); // Set checkout loading to false after checkout is complete
     }
   };
 
   return (
-    <div>
+    <div className="pb-4">
       {loading ? (
-        <div>Loading...</div>
-      ) : (
         <div className="flex space-x-3">
-          <div className="flex flex-col gap-2 bg-white shadow-md p-4 w-3/4">
+          <div className="flex flex-col gap-2 shadow-md p-4 w-3/4 h-[200px] bg-gray-400 animate-pulse">
+            <div className="h-5 w-1/4 bg-gray-500 animate-pulse rounded-full" />
+            <div className="w-full h-1 bg-gray-500 animate-pulse rounded-full" />
+          </div>
+
+          <div className="flex flex-col gap-2 shadow-md p-4 w-1/4 h-[120px] bg-gray-400 animate-pulse justify-between">
+            <div className="flex justify-between">
+              <div className="h-5 w-1/4 bg-gray-500 animate-pulse rounded-full" />
+              <div className="w-2/4 h-5 bg-gray-500 animate-pulse rounded-full" />
+            </div>
+
+            <div className="h-12 w-full bg-gray-500 animate-pulse rounded-md" />
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col lg:flex-row lg:space-x-3">
+          <div className="flex flex-col gap-2 bg-white shadow-md p-4 w-full lg:w-3/4">
+            <div>
+              <div className="font-bold text-2xl">Cart</div>
+              {/* <div className="w-full h-[2px] bg-black rounded-full mb-3" /> */}
+            </div>
             {carts && carts.length > 0 ? (
               carts.map((cart) => (
-                <div key={cart.id} className="flex justify-between space-x-3">
+                <div
+                  key={cart.id}
+                  className="flex flex-col lg:flex-row justify-between space-x-3 border-t-2 py-3"
+                >
                   <div className="flex space-x-3">
                     <div>
                       <Link
@@ -147,12 +179,19 @@ const CartPage = () => {
                     </div>
                   </div>
 
-                  <div className="self-end flex space-x-3">
+                  <div className="self-end flex space-x-3 items-center">
+                    <div>
+                      Stock: <b>{cart.Product.quantity}</b>
+                    </div>
+
                     <button
-                      onClick={async () => {
-                        await dispatch(deleteFromCart(cart.id));
-                        setLoading(true);
-                        await fetchData();
+                      onClick={() => {
+                        dispatch(deleteFromCart(cart.id));
+                        fetchData();
+                        Toast.fire({
+                          icon: "success",
+                          title: "Cart deleted successfully",
+                        });
                       }}
                       className="bg-white border-red-500 text-red-600 p-0 rounded-sm flex items-center justify-center w-8 h-8"
                     >
@@ -202,7 +241,7 @@ const CartPage = () => {
             )}
           </div>
 
-          <div className="w-1/4 ">
+          <div className="w-1/4 hidden lg:block">
             <div className="bg-white shadow-md p-4 space-y-3 sticky top-16">
               <div className="flex justify-between font-bold text-xl">
                 Total: <span>{showFormatRupiah(totalPrice)}</span>
@@ -219,6 +258,23 @@ const CartPage = () => {
                 {checkoutLoading ? "Processing..." : "Checkout"}
               </button>
             </div>
+          </div>
+
+          <div className="bg-white shadow-md p-4 space-y-3 sticky bottom-0 w-full lg:hidden">
+            <div className="flex justify-between font-bold text-xl">
+              Total: <span>{showFormatRupiah(totalPrice)}</span>
+            </div>
+            <button
+              disabled={carts.length === 0 || checkoutLoading} // Disable button during loading
+              onClick={handleCheckout}
+              className={`w-full rounded-sm font-bold ${
+                checkoutLoading ? "bg-gray-400" : "bg-green-500"
+              } text-white ${
+                carts.length === 0 ? "cursor-not-allowed opacity-50" : ""
+              } `}
+            >
+              {checkoutLoading ? "Processing..." : "Checkout"}
+            </button>
           </div>
         </div>
       )}
