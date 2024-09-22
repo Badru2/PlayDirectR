@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../../store/productSlice";
@@ -19,6 +19,8 @@ const UserDashboard = () => {
   const user = useSelector((state) => state.auth.user);
   const [loading, setLoading] = useState(true);
   const [sortedProducts, setSortedProducts] = useState([]);
+
+  const toTop = useRef(null);
 
   const fetchUserData = async () => {
     // Assuming you have an action to fetch user data if it's not available
@@ -41,6 +43,8 @@ const UserDashboard = () => {
       const userId = user.user.id;
       await dispatch(getCart(userId));
     }
+
+    toTop.current.scrollIntoView();
   };
 
   const fetchCarousels = async () => {
@@ -123,6 +127,7 @@ const UserDashboard = () => {
 
   return (
     <div className="px-3">
+      <div ref={toTop} className="top-0 absolute z-[-10]" />
       {loading ? (
         <div className="space-y-3">
           <div className="w-full h-96 animate-pulse bg-gray-500 rounded-lg flex justify-center items-center text-black " />

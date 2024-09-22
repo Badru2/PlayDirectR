@@ -153,7 +153,7 @@ const DetailProduct = () => {
           </div>
         </div>
       ) : (
-        <div className="pb-12">
+        <div className="pb-14">
           <div className="flex flex-col lg:flex-row max-w-[1440px] mx-auto mt-4 gap-2 p-4 lg:pb-4 lg:px-0">
             <div className="w-full lg:w-[400px]">
               <div className="sticky top-16 bg-white shadow-md py-3">
@@ -299,7 +299,8 @@ const DetailProduct = () => {
             </button>
           </div>
 
-          <div className="w-full p-4 lg:p-0">
+          <div className="w-full p-4 lg:p-0 space-y-3">
+            <div className="font-bold text-2xl">Related Product :</div>
             <ProductGrid
               products={relatedProducts}
               handleAddToCart={handleAddToCart}

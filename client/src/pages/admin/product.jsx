@@ -7,41 +7,31 @@ import {
   updateProduct,
   deleteProduct,
 } from "../../store/productSlice";
-
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-
+import { FilePond } from "react-filepond";
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-
-import { FilePond, registerPlugin } from "react-filepond";
-import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
-import FilePondPluginImagePreview from "filepond-plugin-image-preview";
-import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
-
-registerPlugin(
-  FilePondPluginImageExifOrientation,
-  FilePondPluginImagePreview,
-  FilePondPluginFileValidateType
-);
-
 import { showFormatRupiah } from "../../components/themes/format-rupiah";
 import axios from "axios";
-
 import Toast from "../../components/themes/alert";
 
 const ProductPage = () => {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.products.products); // Ensure state path is correct
+  const products = useSelector((state) => state.products.products);
   const user = useSelector((state) => state.auth.user);
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
 
   const [product, setProduct] = useState({
     id: "",
     name: "",
     user_id: "",
-    images: [], // If you handle image uploads, you'd need a proper field here.
+    images: [],
     description: "",
     price: "",
     quantity: "",
@@ -56,7 +46,6 @@ const ProductPage = () => {
   useEffect(() => {
     fetchProduct();
     dispatch(getUser());
-    setLoading(false);
   }, [dispatch]);
 
   const handleEdit = (product) => {
@@ -68,36 +57,33 @@ const ProductPage = () => {
       price: product.price,
       quantity: product.quantity,
       category: product.category,
-    }); // Pre-fill form for editing
-
-    // Map product images to be used by FilePond
+    });
     setFiles(
       product.images.map((image) => ({
-        source: `/public/images/products/${image}`, // Use the actual path to the image
-        // options: {
-        //   type: "local", // FilePond treats this as a local file
-        // },
+        source: `/public/images/products/${image}`,
       }))
     );
   };
 
-  const formatPrice = (value) => {
-    // Remove all non-digit characters (except for decimal point)
-    let cleanValue = value.replace(/[^0-9.]/g, "");
-
-    // Split the integer and decimal parts if a decimal point exists
-    const parts = cleanValue.split(".");
-    const integerPart = parts[0];
-    const decimalPart = parts[1] ? `.${parts[1]}` : "";
-
-    // Format the integer part with commas
-    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-    return formattedInteger + decimalPart;
-  };
-
   const handlePriceChange = (e) => {
     const value = e.target.value;
+
+    // Format the price before setting it to state
+    const formatPrice = (value) => {
+      let cleanValue = value.replace(/[^0-9.]/g, ""); // Remove non-numeric characters
+
+      const parts = cleanValue.split(".");
+      const integerPart = parts[0];
+      const decimalPart = parts[1] ? `.${parts[1]}` : "";
+
+      const formattedInteger = integerPart.replace(
+        /\B(?=(\d{3})+(?!\d))/g,
+        ","
+      );
+
+      return formattedInteger + decimalPart;
+    };
+
     setProduct((prevState) => ({
       ...prevState,
       price: formatPrice(value),
@@ -115,48 +101,27 @@ const ProductPage = () => {
     formData.append("quantity", product.quantity);
     formData.append("category", product.category);
 
-    // Append images from FilePond
     files.forEach((fileItem) => {
-      formData.append("images", fileItem.file);
+      formData.append("images", fileItem.file, fileItem.file.name);
     });
 
-    console.log("Updating product:", formData);
     try {
       if (product.id) {
-        // Update product
+        // update product
         const response = await axios.put(
           `/api/product/update/${product.id}`,
           formData,
           {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
+            headers: { "Content-Type": "multipart/form-data" },
           }
         );
-
-        Toast.fire({
-          icon: "success",
-          title: "Product updated successfully",
-        });
-        console.log("Updating product:", response.data);
+        Toast.fire({ icon: "success", title: "Product updated successfully" });
         fetchProduct();
-
-        // dispatch(updateProduct({ id: product.id, formData })).then(() => {
-        //   setLoading(true);
-        //   fetchProduct();
-        // });
       } else {
-        dispatch(addProduct(formData)).then(() => {
-          fetchProduct();
-        });
-
-        Toast.fire({
-          icon: "success",
-          title: "Product added successfully",
-        });
+        dispatch(addProduct(formData)).then(() => fetchProduct());
+        Toast.fire({ icon: "success", title: "Product added successfully" });
       }
 
-      // Reset form after submission
       setProduct({
         id: "",
         name: "",
@@ -178,13 +143,27 @@ const ProductPage = () => {
     dispatch(deleteProduct(id));
   };
 
+  const sortedProducts = [...products].sort((a, b) => {
+    const dateA = new Date(a.created_at);
+    const dateB = new Date(b.created_at);
+    return dateB - dateA;
+  });
+
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = sortedProducts.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+  const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
+
   return (
     <div>
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <div className="flex space-x-3">
-          <div className="w-1/2 overflow-auto">
+        <div className="space-y-3">
+          <div className="w-full overflow-auto shadow-md">
             <form
               onSubmit={handleSubmit}
               encType="multipart/form-data"
@@ -288,54 +267,69 @@ const ProductPage = () => {
             </form>
           </div>
 
-          <div className="space-y-3 w-1/2">
-            {products.length > 0 ? (
-              products.map((product) => (
-                <div
-                  key={product.id}
-                  className="bg-white p-3 shadow-md flex space-x-3"
+          <div className="space-y-3 w-full">
+            <div className="bg-white shadow-md">
+              <table className="w-full table">
+                <thead>
+                  <tr>
+                    <td className="font-bold text-xl">Name</td>
+                    <td className="font-bold text-xl">Price</td>
+                    <td className="font-bold text-xl">Quantity</td>
+                    <td className="font-bold text-xl">Category</td>
+                    <td className="font-bold text-xl">Action</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentProducts.length > 0 ? (
+                    currentProducts.map((product) => (
+                      <tr key={product.id}>
+                        <td>{product.name}</td>
+                        <td>{showFormatRupiah(product.price)}</td>
+                        <td>{product.quantity}</td>
+                        <td>{product.category}</td>
+                        <td className="space-x-2">
+                          <button
+                            onClick={() => handleEdit(product)}
+                            className="bg-yellow-300 rounded-sm h-8 w-16 font-bold text-white p-0"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(product.id)}
+                            className="bg-red-500 text-white font-bold rounded-sm h-8 w-16 p-0"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="text-center">
+                        Product not found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination controls */}
+            <div className="pagination">
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentPage(index + 1)}
+                  className={
+                    currentPage === index + 1
+                      ? "bg-blue-700 text-white font-bold"
+                      : " " + "bg-blue-500 text-white font-bold"
+                  }
                 >
-                  <div className="w-1/4">
-                    <img
-                      src={`/public/images/products/${product.images[0]}`}
-                      alt={product.name}
-                      className="w-full object-cover"
-                    />
-                  </div>
-
-                  <div className="w-3/4 space-y-2">
-                    <div>
-                      <div className="font-bold text-xl">{product.name}</div>
-                      <div className="font-bold text-xl">
-                        {showFormatRupiah(product.price)}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div>Quantity: {product.quantity}</div>
-                      <div>Category: {product.category}</div>
-                    </div>
-
-                    <div className="space-x-3">
-                      <button
-                        onClick={() => handleEdit(product)}
-                        className="bg-yellow-300 rounded-sm h-8 w-16 font-bold text-white p-0"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(product.id)}
-                        className="bg-red-500 rounded-sm h-8 w-16 font-bold text-white p-0"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p>Product not found</p>
-            )}
+                  {index + 1}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}

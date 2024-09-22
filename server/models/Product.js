@@ -40,6 +40,10 @@ const Product = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    subcategories: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
     clicked: {
       type: DataTypes.INTEGER,
       allowNull: false,
