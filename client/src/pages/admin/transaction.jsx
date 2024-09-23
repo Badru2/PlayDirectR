@@ -61,33 +61,31 @@ const AdminTransaction = () => {
   };
 
   return (
-    <div>
+    <div className="pb-12">
       {loading ? (
         <div>
           <h1>Loading...</h1>
         </div>
       ) : (
-        <div className="flex space-x-3">
-          <div className="w-2/6">
+        <div className="flex flex-col space-y-3">
+          <div className="w-full flex">
             <div className="bg-white p-4 shadow-md sticky top-16">
-              <div>
-                <label htmlFor="status" className="border">
-                  <select
-                    id="status"
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    className="w-full py-3 px-2 rounded-sm border"
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="deliver">Develir</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                </label>
-              </div>
+              <label htmlFor="status" className="border">
+                <select
+                  id="status"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  className="w-full py-3 px-2 rounded-sm border"
+                >
+                  <option value="pending">Pending</option>
+                  <option value="deliver">Deliver</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </label>
             </div>
           </div>
 
-          <div className="w-4/6 space-y-3 join join-vertical">
+          <div className="w-full space-y-3 join join-vertical">
             {transactions.map((transaction) => (
               <div
                 key={transaction.id}

@@ -158,178 +158,172 @@ const ProductPage = () => {
   const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
 
   return (
-    <div>
+    <div className="space-y-3">
+      <div className="w-full overflow-auto shadow-md">
+        <form
+          onSubmit={handleSubmit}
+          encType="multipart/form-data"
+          className="flex bg-white p-4 shadow-md space-x-3"
+        >
+          <div className="flex flex-col w-1/2 space-y-3">
+            <input
+              type="text"
+              placeholder="Name"
+              value={product.name}
+              onChange={(e) => setProduct({ ...product, name: e.target.value })}
+              className="w-full p-2 border"
+              required
+            />
+
+            <input
+              type="text"
+              placeholder="Price"
+              value={product.price}
+              onChange={handlePriceChange}
+              className="w-full p-2 border"
+              required
+            />
+
+            <FilePond
+              acceptedFileTypes={["image/*"]}
+              files={files}
+              onupdatefiles={setFiles}
+              allowMultiple={true}
+              allowReorder={true}
+              maxFiles={4}
+              credits={true}
+              labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+            />
+          </div>
+
+          <div className="w-1/2 flex-col flex space-y-3">
+            <input
+              type="text"
+              placeholder="Quantity"
+              value={product.quantity}
+              onChange={(e) =>
+                setProduct({ ...product, quantity: e.target.value })
+              }
+              className="w-full p-2 border"
+              required
+            />
+            <input
+              type="text"
+              placeholder="Category"
+              value={product.category}
+              onChange={(e) =>
+                setProduct({ ...product, category: e.target.value })
+              }
+              className="w-full p-2 border"
+              required
+            />
+
+            <div>
+              <ReactQuill
+                value={product.description}
+                onChange={(value) =>
+                  setProduct({
+                    ...product,
+                    description: value,
+                  })
+                }
+              />
+            </div>
+
+            <div className="space-x-3">
+              <button
+                type="reset"
+                onClick={() => {
+                  setFiles([]);
+                  setProduct({
+                    id: null,
+                    name: null,
+                    user_id: user.user.id,
+                    images: null,
+                    description: null,
+                    price: null,
+                    quantity: null,
+                    category: null,
+                  });
+                }}
+                className="bg-yellow-400 text-white font-bold rounded-sm"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="bg-blue-400 text-white font-bold rounded-sm"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <div className="space-y-3">
-          <div className="w-full overflow-auto shadow-md">
-            <form
-              onSubmit={handleSubmit}
-              encType="multipart/form-data"
-              className="flex bg-white p-4 shadow-md space-x-3"
-            >
-              <div className="flex flex-col w-1/2 space-y-3">
-                <input
-                  type="text"
-                  placeholder="Name"
-                  value={product.name}
-                  onChange={(e) =>
-                    setProduct({ ...product, name: e.target.value })
-                  }
-                  className="w-full p-2 border"
-                  required
-                />
-
-                <input
-                  type="text"
-                  placeholder="Price"
-                  value={product.price}
-                  onChange={handlePriceChange}
-                  className="w-full p-2 border"
-                  required
-                />
-
-                <FilePond
-                  acceptedFileTypes={["image/*"]}
-                  files={files}
-                  onupdatefiles={setFiles}
-                  allowMultiple={true}
-                  allowReorder={true}
-                  maxFiles={4}
-                  credits={true}
-                  labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-                />
-              </div>
-
-              <div className="w-1/2 flex-col flex space-y-3">
-                <input
-                  type="text"
-                  placeholder="Quantity"
-                  value={product.quantity}
-                  onChange={(e) =>
-                    setProduct({ ...product, quantity: e.target.value })
-                  }
-                  className="w-full p-2 border"
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="Category"
-                  value={product.category}
-                  onChange={(e) =>
-                    setProduct({ ...product, category: e.target.value })
-                  }
-                  className="w-full p-2 border"
-                  required
-                />
-
-                <div>
-                  <ReactQuill
-                    value={product.description}
-                    onChange={(value) =>
-                      setProduct({
-                        ...product,
-                        description: value,
-                      })
-                    }
-                  />
-                </div>
-
-                <div>
-                  <button
-                    type="reset"
-                    onClick={() => {
-                      setFiles([]);
-                      setProduct({
-                        id: null,
-                        name: null,
-                        user_id: user.user.id,
-                        images: null,
-                        description: null,
-                        price: null,
-                        quantity: null,
-                        category: null,
-                      });
-                    }}
-                    className="bg-yellow-400 text-white font-bold"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="bg-blue-400 text-white font-bold"
-                  >
-                    Submit
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-
-          <div className="space-y-3 w-full">
-            <div className="bg-white shadow-md">
-              <table className="w-full table">
-                <thead>
-                  <tr>
-                    <td className="font-bold text-xl">Name</td>
-                    <td className="font-bold text-xl">Price</td>
-                    <td className="font-bold text-xl">Quantity</td>
-                    <td className="font-bold text-xl">Category</td>
-                    <td className="font-bold text-xl">Action</td>
+        <div className="space-y-3 pb-5">
+          <table className="w-full table bg-white shadow-md rounded-sm">
+            <thead>
+              <tr>
+                <td className="font-bold text-xl">Name</td>
+                <td className="font-bold text-xl">Price</td>
+                <td className="font-bold text-xl">Quantity</td>
+                <td className="font-bold text-xl">Category</td>
+                <td className="font-bold text-xl">Action</td>
+              </tr>
+            </thead>
+            <tbody>
+              {currentProducts.length > 0 ? (
+                currentProducts.map((product) => (
+                  <tr key={product.id}>
+                    <td>{product.name}</td>
+                    <td>{showFormatRupiah(product.price)}</td>
+                    <td>{product.quantity}</td>
+                    <td>{product.category}</td>
+                    <td className="space-x-2">
+                      <button
+                        onClick={() => handleEdit(product)}
+                        className="bg-yellow-300 rounded-sm h-8 w-16 font-bold text-white p-0"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(product.id)}
+                        className="bg-red-500 text-white font-bold rounded-sm h-8 w-16 p-0"
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {currentProducts.length > 0 ? (
-                    currentProducts.map((product) => (
-                      <tr key={product.id}>
-                        <td>{product.name}</td>
-                        <td>{showFormatRupiah(product.price)}</td>
-                        <td>{product.quantity}</td>
-                        <td>{product.category}</td>
-                        <td className="space-x-2">
-                          <button
-                            onClick={() => handleEdit(product)}
-                            className="bg-yellow-300 rounded-sm h-8 w-16 font-bold text-white p-0"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDelete(product.id)}
-                            className="bg-red-500 text-white font-bold rounded-sm h-8 w-16 p-0"
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={5} className="text-center">
-                        Product not found
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="text-center">
+                    Product not found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
 
-            {/* Pagination controls */}
-            <div className="pagination">
-              {[...Array(totalPages)].map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentPage(index + 1)}
-                  className={
-                    currentPage === index + 1
-                      ? "bg-blue-700 text-white font-bold"
-                      : " " + "bg-blue-500 text-white font-bold"
-                  }
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
+          {/* Pagination controls */}
+          <div className="pagination flex justify-center space-x-3">
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentPage(index + 1)}
+                className={
+                  currentPage === index + 1
+                    ? "bg-blue-700 text-white font-bold rounded-sm"
+                    : " " + "bg-blue-500 text-white font-bold rounded-sm"
+                }
+              >
+                {index + 1}
+              </button>
+            ))}
           </div>
         </div>
       )}

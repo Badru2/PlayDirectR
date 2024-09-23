@@ -59,8 +59,7 @@ router.put("/update/:id", upload.single("avatar"), async (req, res) => {
     res.status(200).json({ message: "User updated successfully", user });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error updating user: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -79,8 +78,7 @@ router.delete("/delete/:id", async (req, res) => {
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error deleting user: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 

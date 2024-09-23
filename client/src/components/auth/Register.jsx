@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { loginSuccess } from "../../store/authSlice";
+import validator from "validator";
+import Toast from "../../components/themes/alert";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -18,12 +20,41 @@ const Register = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const fetchUser = async (username) => {
+    try {
+      const response = await axios.get(`/api/auth/users?username=${username}`);
+      return response.data.exists; // Assuming your API returns a boolean indicating existence
+    } catch (error) {
+      console.error("Error checking username:", error);
+      return false;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // validate duplicate username
+    const isUsernameTaken = await fetchUser(formData.username);
+    if (isUsernameTaken) {
+      Toast.fire({
+        icon: "error",
+        title: "Username already exists",
+      });
+      return;
+    }
+
+    // Validate email
+    if (!validator.isEmail(formData.email)) {
+      Toast.fire({
+        icon: "error",
+        title: "Please enter a valid email address",
+      });
+      return;
+    }
+
     try {
       // Register the user
-      const registerResponse = await axios.post("/api/auth/register", formData);
-      // alert(registerResponse.data.message);
+      await axios.post("/api/auth/register", formData);
 
       // Automatic login after registration
       const loginResponse = await axios.post("/api/auth/login", {
@@ -35,22 +66,20 @@ const Register = () => {
       dispatch(loginSuccess(loginResponse.data.user));
 
       // Redirect based on the role
-      // if (loginResponse.data.role === "superAdmin") {
-      //   navigate("/super-admin/dashboard");
-      // } else if (loginResponse.data.role === "admin") {
-      //   navigate("/admin/dashboard");
-      // } else {
-      // }
-
-      window.location.reload();
       navigate("/");
+
+      // Optional: Refresh the page after registration
+      window.location.reload();
     } catch (error) {
-      alert(error.response.data.message);
+      Toast.fire({
+        icon: "error",
+        title: error.response?.data?.message || "An error occurred",
+      });
     }
   };
 
   return (
-    <div className="bg-white shadow-md ">
+    <div className="bg-white shadow-md">
       <form onSubmit={handleSubmit} className="p-4 space-y-3">
         <input
           name="username"

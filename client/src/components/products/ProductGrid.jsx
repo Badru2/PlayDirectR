@@ -21,7 +21,7 @@ const ProductGrid = ({ products, handleAddToCart, carts, user }) => {
               <img
                 src={"/public/images/products/" + product.images[0]}
                 alt={product.name}
-                className="h-48 md:h-72 lg:h-56 object-cover w-full object-top rounded-t-md"
+                className="h-48 sm:h-60 md:h-72 lg:h-56 object-cover w-full object-top rounded-t-md"
               />
             </Link>
             <div className="p-2 space-y-3">

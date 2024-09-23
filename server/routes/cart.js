@@ -50,8 +50,7 @@ router.post("/add", async (req, res) => {
     }
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error creating cart: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -79,8 +78,7 @@ router.get("/show", async (req, res) => {
     res.status(200).json({ message: "Carts retrieved successfully", carts });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error getting carts: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -116,8 +114,7 @@ router.put("/update/:id", async (req, res) => {
     res.status(200).json({ message: "Cart updated successfully", cart });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error updating cart: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -136,8 +133,7 @@ router.delete("/delete/:id", async (req, res) => {
     res.status(200).json({ message: "Cart deleted successfully" });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error deleting cart: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -157,8 +153,7 @@ router.delete("/clear", async (req, res) => {
     res.status(200).json({ message: "Carts deleted successfully" });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error deleting carts: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 

@@ -10,9 +10,12 @@ registerPlugin(FilePondPluginImagePreview);
 
 import Toast from "../../components/themes/alert";
 import { Helmet } from "react-helmet";
+import { createLog } from "../../store/appLogSlice";
+import { useDispatch } from "react-redux";
 
 const UserProfile = () => {
   const { user } = useAuth();
+  const dispatch = useDispatch();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null); // Error state
@@ -61,6 +64,8 @@ const UserProfile = () => {
         icon: "error",
         title: "Failed to update profile",
       });
+
+      dispatch(createLog({ message: error.message, route: "/profile" }));
       setError("Failed to update profile.");
     }
   };

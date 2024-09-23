@@ -8,6 +8,7 @@ const transactionRoutes = require("./routes/transaction");
 const wishlistRoutes = require("./routes/wishlist");
 const userRoutes = require("./routes/user");
 const carouselRoutes = require("./routes/carousel");
+const historyAdminRoutes = require("./routes/historyAdmin");
 
 const path = require("path");
 
@@ -18,6 +19,7 @@ const Wishlist = require("./models/Wishlist.js");
 const User = require("./models/User.js");
 const Carousel = require("./models/Carousel.js");
 const AppLog = require("./models/AppLog.js");
+const HistoryAdmin = require("./models/HistoryAdmin.js");
 
 const { Server } = require("socket.io");
 const { createServer } = require("http");
@@ -89,6 +91,7 @@ app.use("/api/transaction", transactionRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/carousel", carouselRoutes);
+app.use("/api/history", historyAdminRoutes);
 
 // Sequelize associations
 User.hasMany(Transaction, { foreignKey: "user_id" });
@@ -104,6 +107,19 @@ Transaction.belongsTo(User, { foreignKey: "user_id" });
 
 Wishlist.belongsTo(Product, { foreignKey: "product_id" });
 Wishlist.belongsTo(User, { foreignKey: "user_id" });
+
+AppLog.belongsTo(User, { foreignKey: "user_id" });
+
+HistoryAdmin.belongsTo(User, { foreignKey: "user_id" });
+
+// Sequelize associations
+console.log(User.associations);
+console.log(Cart.associations);
+console.log(Product.associations);
+console.log(Transaction.associations);
+console.log(Wishlist.associations);
+console.log(AppLog.associations);
+console.log(HistoryAdmin.associations);
 
 // WebSocket connection setup
 io.on("connection", (socket) => {

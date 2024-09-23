@@ -33,8 +33,8 @@ router.post("/create", async (req, res) => {
       .json({ message: "Transaction created successfully", transaction });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      user_id: user_id,
+      message: "Error creating transaction: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -52,8 +52,7 @@ router.get("/show", async (req, res) => {
       .json({ message: "Transactions retrieved successfully", transactions });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error getting transactions: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -72,8 +71,8 @@ router.get("/get", async (req, res) => {
       .json({ message: "Transactions retrieved successfully", transactions });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      user_id: userId,
+      message: "Error getting transactions: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -92,8 +91,8 @@ router.get("/detail", async (req, res) => {
       .json({ message: "Transactions retrieved successfully", transactions });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      user_id: userId,
+      message: "Error getting transaction: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -130,8 +129,7 @@ router.put("/update/:id", async (req, res) => {
       .json({ message: "Transaction updated successfully", transaction });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error updating transaction: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -152,8 +150,7 @@ router.delete("/delete/:id", async (req, res) => {
       .json({ message: "Transaction deleted successfully", transaction });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error deleting transaction: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 

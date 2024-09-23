@@ -34,8 +34,7 @@ router.post("/create", upload.single("image"), async (req, res) => {
       .json({ message: "Carousel created successfully", carousel });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error creating carousel: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -49,8 +48,7 @@ router.get("/show", async (req, res) => {
     res.status(200).json(carousels);
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error getting carousels: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 

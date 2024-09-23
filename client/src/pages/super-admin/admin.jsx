@@ -9,13 +9,13 @@ const AdminCRUD = () => {
     username: "",
     email: "",
     password: "",
-    role: "admin",
+    role: "",
   });
   const [loading, setLoading] = useState(true);
   const [admins, setAdmins] = useState([]);
   const [users, setUsers] = useState([]);
   const [adminOpen, setAdminOpen] = useState(true); // Manage accordion open state for admins
-  const [userOpen, setUserOpen] = useState(false); // Manage accordion open state for users
+  const [userOpen, setUserOpen] = useState(true); // Manage accordion open state for users
   const [isEditing, setIsEditing] = useState(false); // To track edit mode
   const [editingAdmin, setEditingAdmin] = useState(null); // To store the admin being edited
 
@@ -24,7 +24,9 @@ const AdminCRUD = () => {
       const response = await axios.get("/api/auth/get/users");
 
       // Filter role admin
-      const admins = response.data.filter((admin) => admin.role === "admin");
+      const admins = response.data.filter(
+        (admin) => admin.role === "adminSales"
+      );
 
       // Filter role user
       const users = response.data.filter((user) => user.role === "user");
@@ -112,6 +114,18 @@ const AdminCRUD = () => {
                 }
                 className="w-full p-3 border border-gray-500 rounded-sm"
               />
+
+              <select
+                name="role"
+                value={formData.role}
+                onChange={(e) =>
+                  setFormData({ ...formData, role: e.target.value })
+                }
+                className="w-full p-3 border border-gray-500 rounded-sm"
+              >
+                <option value="adminSales">Admin Sales</option>
+                <option value="adminStorage">Admin Storage</option>
+              </select>
               <button
                 type="submit"
                 className="bg-blue-500 text-white font-bold w-full rounded-sm"

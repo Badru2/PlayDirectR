@@ -18,8 +18,7 @@ router.post("/add", async (req, res) => {
       .json({ message: "Wishlist created successfully", wishlist });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error creating wishlist: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -40,8 +39,7 @@ router.get("/show", async (req, res) => {
       .json({ message: "Wishlists retrieved successfully", wishlists });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error retrieving wishlists: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -62,8 +60,7 @@ router.delete("/delete/:id", async (req, res) => {
       .json({ message: "Wishlist deleted successfully", wishlist });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error deleting wishlist: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 

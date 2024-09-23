@@ -157,7 +157,7 @@ const UserDashboard = () => {
       ) : (
         <div className="pb-16">
           <div id="fade-carousel" className="relative w-full mb-4">
-            <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
+            <div className="relative h-80 overflow-hidden rounded-lg md:h-96">
               {carousels.map((carousel, index) => (
                 <div
                   key={carousel.id}

@@ -4,6 +4,7 @@ const multer = require("multer");
 const path = require("path");
 const { Op } = require("sequelize");
 const AppLog = require("../models/AppLog");
+const HistoryAdmin = require("../models/HistoryAdmin");
 
 const router = express.Router();
 
@@ -61,11 +62,30 @@ router.post("/create", upload.array("images", 5), async (req, res) => {
       quantity,
       category,
     });
+
+    // History create
+    await HistoryAdmin.create({
+      user_id: user_id,
+      product_id: product.id,
+      old_product_name: null,
+      new_product_name: name,
+      old_product_description: null,
+      new_product_description: description,
+      old_product_price: null,
+      new_product_price: price,
+      old_product_quantity: null,
+      new_product_quantity: quantity,
+      old_product_category: null,
+      new_product_category: category,
+      old_product_images: null,
+      new_product_images: images,
+      status: "create",
+    });
+
     res.status(201).json({ message: "Product created successfully", product });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error creating product: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -82,8 +102,7 @@ router.get("/show", async (req, res) => {
       .json({ message: "Products retrieved successfully", products });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error getting products: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -106,8 +125,7 @@ router.get("/detail", async (req, res) => {
       .json({ message: "Product retrieved successfully", product });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error getting product: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -131,8 +149,7 @@ router.get("/related", async (req, res) => {
       .json({ message: "Products retrieved successfully", products });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error getting products: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -167,11 +184,30 @@ router.put("/update/:id", upload.array("images", 5), async (req, res) => {
 
     // Save the updated product
     await product.save();
+
+    // History update
+    await HistoryAdmin.create({
+      user_id: user_id,
+      product_id: id,
+      old_product_name: product.name,
+      new_product_name: name,
+      old_product_price: product.price,
+      new_product_price: price,
+      old_product_quantity: product.quantity,
+      new_product_quantity: quantity,
+      old_product_description: product.description,
+      new_product_description: description,
+      old_product_category: product.category,
+      new_product_category: category,
+      old_product_images: product.images,
+      new_product_images: imagePaths,
+      status: "update",
+    });
+
     res.status(200).json({ message: "Product updated successfully", product });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error updating product: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -199,8 +235,7 @@ router.get("/search", async (req, res) => {
       .json({ message: "Products retrieved successfully", products });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error getting products: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
@@ -219,8 +254,7 @@ router.delete("/delete/:id", async (req, res) => {
     res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
     await AppLog.create({
-      message: error.message,
-      stack: error.stack,
+      message: "Error deleting product: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database
 
