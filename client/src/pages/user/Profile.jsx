@@ -9,6 +9,7 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 registerPlugin(FilePondPluginImagePreview);
 
 import Toast from "../../components/themes/alert";
+import { Helmet } from "react-helmet";
 
 const UserProfile = () => {
   const { user } = useAuth();
@@ -80,6 +81,9 @@ const UserProfile = () => {
 
   return (
     <div className="">
+      <Helmet>
+        <title>PlayDirect | Profile</title>
+      </Helmet>
       {loading ? (
         <div className="flex flex-col lg:flex-row lg:space-x-3 space-y-3 lg:space-y-0">
           <div className="w-full lg:w-1/3">

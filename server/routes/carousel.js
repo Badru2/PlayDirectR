@@ -2,6 +2,7 @@ const express = require("express");
 const Carousel = require("../models/Carousel");
 const multer = require("multer");
 const path = require("path");
+const AppLog = require("../models/AppLog");
 
 const router = express.Router();
 
@@ -32,6 +33,12 @@ router.post("/create", upload.single("image"), async (req, res) => {
       .status(201)
       .json({ message: "Carousel created successfully", carousel });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -41,6 +48,12 @@ router.get("/show", async (req, res) => {
     const carousels = await Carousel.findAll();
     res.status(200).json(carousels);
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });

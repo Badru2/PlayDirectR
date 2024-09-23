@@ -1,8 +1,17 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
   css: {
     devSourcemap: true,
     lightningcss: {
@@ -11,14 +20,16 @@ export default defineConfig({
   },
   server: {
     host: "0.0.0.0",
-    port: 3001,
+    port: process.env.VITE_APP_PORT,
     proxy: {
       "/api": {
-        target: "http://localhost:8000" || "http://http://192.168.18.13:8000",
+        target:
+          `http://${process.env.SERVER_HOST}:${process.env.SERVER_PORT}` ||
+          `http://http://192.168.18.13:${process.env.SERVER_PORT}`,
         changeOrigin: true,
       },
       "/public": {
-        target: "http://localhost:8000",
+        target: `http://${process.env.SERVER_HOST}:${process.env.SERVER_PORT}`,
         changeOrigin: true,
       },
     },

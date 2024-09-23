@@ -7,6 +7,7 @@ const User = require("../models/User");
 const router = express.Router();
 const path = require("path");
 const multer = require("multer");
+const AppLog = require("../models/AppLog");
 
 // Set up multer for file upload (e.g., avatar)
 const storage = multer.diskStorage({
@@ -61,6 +62,12 @@ router.post("/register", async (req, res) => {
 
     res.status(201).json({ message: "User created successfully", user });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -96,6 +103,12 @@ router.post("/login", async (req, res) => {
 
     res.status(200).json({ message: "Login successful", token });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -128,6 +141,12 @@ router.get("/profile/:id", async (req, res) => {
     const user = await User.findOne({ where: { id } });
     res.status(200).json(user);
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -137,6 +156,12 @@ router.get("/get/admin", async (req, res) => {
     const admins = await User.findAll({ where: { role: "admin" } });
     res.status(200).json(admins);
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -146,6 +171,12 @@ router.get("/get/users", async (req, res) => {
     const users = await User.findAll();
     res.status(200).json(users);
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -156,6 +187,12 @@ router.delete("/delete/:id", async (req, res) => {
     const deletedUser = await User.destroy({ where: { id } });
     res.status(200).json({ message: "User deleted successfully", deletedUser });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -194,6 +231,12 @@ router.put("/update/:id", upload.single("avatar"), async (req, res) => {
 
     res.status(200).json({ message: "User updated successfully", updatedUser });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     console.error(error);
     res.status(500).json({ message: "Server error", error });
   }

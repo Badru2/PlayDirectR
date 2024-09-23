@@ -7,6 +7,7 @@ import ProductGrid from "../../components/products/ProductGrid";
 import axios from "axios";
 import Toast from "../../components/themes/alert";
 import { getUser } from "../../store/authSlice";
+import { Helmet } from "react-helmet";
 
 const UserDashboard = () => {
   const dispatch = useDispatch();
@@ -127,10 +128,15 @@ const UserDashboard = () => {
 
   return (
     <div className="px-3">
+      <Helmet>
+        <title>PlayDirect | Dashboard</title>
+      </Helmet>
       <div ref={toTop} className="top-0 absolute z-[-10]" />
       {loading ? (
         <div className="space-y-3">
           <div className="w-full h-96 animate-pulse bg-gray-500 rounded-lg flex justify-center items-center text-black " />
+
+          <div className="w-1/4 h-9 animate-pulse bg-gray-500 rounded-lg" />
 
           {/* Loop product loading */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">

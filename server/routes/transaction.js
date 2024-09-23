@@ -3,6 +3,7 @@ const router = express.Router();
 const Transaction = require("../models/Transaction");
 const Product = require("../models/Product");
 const User = require("../models/User");
+const AppLog = require("../models/AppLog");
 
 router.post("/create", async (req, res) => {
   const { user_id, products, total } = req.body;
@@ -31,6 +32,12 @@ router.post("/create", async (req, res) => {
       .status(201)
       .json({ message: "Transaction created successfully", transaction });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -44,6 +51,12 @@ router.get("/show", async (req, res) => {
       .status(200)
       .json({ message: "Transactions retrieved successfully", transactions });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -58,6 +71,12 @@ router.get("/get", async (req, res) => {
       .status(200)
       .json({ message: "Transactions retrieved successfully", transactions });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -72,6 +91,12 @@ router.get("/detail", async (req, res) => {
       .status(200)
       .json({ message: "Transactions retrieved successfully", transactions });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -104,6 +129,12 @@ router.put("/update/:id", async (req, res) => {
       .status(200)
       .json({ message: "Transaction updated successfully", transaction });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -120,6 +151,12 @@ router.delete("/delete/:id", async (req, res) => {
       .status(200)
       .json({ message: "Transaction deleted successfully", transaction });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });

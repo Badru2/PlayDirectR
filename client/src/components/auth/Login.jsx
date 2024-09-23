@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../store/authSlice";
+import { Helmet } from "react-helmet";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -47,6 +48,10 @@ const Login = () => {
 
   return (
     <div className="bg-white shadow-md">
+      <Helmet>
+        <title>PlayDirect | Login</title>
+      </Helmet>
+
       <form onSubmit={handleSubmit} className=" p-4 space-y-3">
         <input
           name="email"

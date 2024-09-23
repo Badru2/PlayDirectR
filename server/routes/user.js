@@ -3,6 +3,7 @@ const User = require("../models/User");
 const multer = require("multer");
 const path = require("path");
 const bcrypt = require("bcrypt");
+const AppLog = require("../models/AppLog");
 
 const router = express.Router();
 
@@ -57,6 +58,12 @@ router.put("/update/:id", upload.single("avatar"), async (req, res) => {
     await user.save();
     res.status(200).json({ message: "User updated successfully", user });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -71,6 +78,12 @@ router.delete("/delete/:id", async (req, res) => {
     await user.destroy();
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });

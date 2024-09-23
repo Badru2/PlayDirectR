@@ -17,25 +17,71 @@ const Transaction = require("./models/Transaction.js");
 const Wishlist = require("./models/Wishlist.js");
 const User = require("./models/User.js");
 const Carousel = require("./models/Carousel.js");
+const AppLog = require("./models/AppLog.js");
 
-// const { Server } = require("socket.io");
-// const { createServer } = require("http");
+const { Server } = require("socket.io");
+const { createServer } = require("http");
+const cors = require("cors");
 
 const app = express();
 
-// const server = createServer(app);
-// const io = new Server({
-//   cors: {
-//     origin: "http://localhost:8000",
-//     methods: ["GET", "POST"],
-//   },
-// });
+const dotenv = require("dotenv");
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+
+const allowedOrigins = [
+  `http://localhost:${process.env.VITE_APP_PORT}`,
+  `http://${process.env.SERVER_LOCAL_HOST}:${process.env.VITE_APP_PORT}`,
+  `http://127.0.0.1:${process.env.VITE_APP_PORT}`, // Include 127.0.0.1 as well
+  `http://192.168.18.13:${process.env.VITE_APP_PORT}`,
+  `${process.env.PUBLIC_HOST}`,
+];
+
+console.log(allowedOrigins);
+
+// Enable CORS for the frontend URL
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // If there's no origin (i.e., for non-browser requests), allow it
+      if (!origin) return callback(null, true);
+      // Allow the request if the origin is in the allowedOrigins array
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        // If the origin is not allowed, reject the request
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
+// Create the HTTP server and attach Socket.IO
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: function (origin, callback) {
+      // If there's no origin (i.e., for non-browser requests), allow it
+      if (!origin) return callback(null, true);
+      // Allow the request if the origin is in the allowedOrigins array
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        // If the origin is not allowed, reject the request
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
 app.use(express.json());
 app.use(cookieParser());
-
 app.use("/public", express.static(path.join(__dirname, "public")));
 
+// Define your routes
 app.use("/api/auth", authRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/cart", cartRoutes);
@@ -59,11 +105,21 @@ Transaction.belongsTo(User, { foreignKey: "user_id" });
 Wishlist.belongsTo(Product, { foreignKey: "product_id" });
 Wishlist.belongsTo(User, { foreignKey: "user_id" });
 
-console.log(User.associations);
-console.log(Cart.associations);
-console.log(Product.associations);
-console.log(Transaction.associations);
-console.log(Wishlist.associations);
+// WebSocket connection setup
+io.on("connection", (socket) => {
+  console.log("A user connected", socket.id);
+
+  socket.on("message", (data) => {
+    console.log("Message from client: ", data);
+    io.emit("message", data); // Broadcast message to all clients
+  });
+
+  socket.on("disconnect", () => {
+    console.log("A user disconnected", socket.id);
+  });
+});
+
+app.set("socketio", io);
 
 // Basic error handling middleware
 app.use((err, req, res, next) => {
@@ -73,16 +129,8 @@ app.use((err, req, res, next) => {
 
 // Connect to PostgreSQL database and start the server
 sequelize.sync({ alter: true }).then(() => {
-  app.listen(8000, () => {
+  server.listen(8000, () => {
+    // Use server.listen instead of app.listen
     console.log("Server running on http://localhost:8000");
   });
-
-  // WebSocket connection setup
-  // io.listen(server);
-  // io.on("connection", (socket) => {
-  //   console.log("a user connected");
-  //   socket.on("disconnect", () => {
-  //     console.log("user disconnected");
-  //   });
-  // });
 });

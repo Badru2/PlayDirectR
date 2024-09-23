@@ -3,7 +3,6 @@ import { Link, Outlet } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import axios from "axios";
 import { showFormatRupiah } from "../themes/format-rupiah";
-// import { io } from "socket.io-client";
 
 const UserLayout = () => {
   const { user, logout } = useAuth();
@@ -14,10 +13,6 @@ const UserLayout = () => {
   const [carts, setCarts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  // const socket = io("http://localhost:5000", {
-  //   transports: ["websocket"],
-  // });
 
   const [isOpen, setIsOpen] = useState(false); // Dropdown state
   const toggleDropdown = () => setIsOpen(!isOpen); // Toggle dropdown

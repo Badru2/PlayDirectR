@@ -51,7 +51,12 @@ const AdminCRUD = () => {
         .then(() => {
           fetchData(); // Refresh the data after updating
           setIsEditing(false); // Reset edit mode
-          setFormData({ username: "", email: "", password: "", role: "admin" });
+          setFormData({
+            username: "",
+            email: "",
+            password: "",
+            role: "adminSales",
+          });
         })
         .catch((error) => console.error("Error updating admin:", error));
     } else {

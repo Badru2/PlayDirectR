@@ -1,6 +1,7 @@
 const express = require("express");
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
+const AppLog = require("../models/AppLog");
 
 const router = express.Router();
 
@@ -48,6 +49,12 @@ router.post("/add", async (req, res) => {
         .json({ message: "Cart created successfully", cart });
     }
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     console.error(error);
     return res.status(500).json({ message: "Server error", error });
   }
@@ -71,6 +78,12 @@ router.get("/show", async (req, res) => {
     });
     res.status(200).json({ message: "Carts retrieved successfully", carts });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -102,6 +115,12 @@ router.put("/update/:id", async (req, res) => {
     await cart.save();
     res.status(200).json({ message: "Cart updated successfully", cart });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -116,6 +135,12 @@ router.delete("/delete/:id", async (req, res) => {
     await cart.destroy();
     res.status(200).json({ message: "Cart deleted successfully" });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -131,6 +156,12 @@ router.delete("/clear", async (req, res) => {
     });
     res.status(200).json({ message: "Carts deleted successfully" });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });

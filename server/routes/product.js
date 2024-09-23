@@ -3,6 +3,7 @@ const Product = require("../models/Product");
 const multer = require("multer");
 const path = require("path");
 const { Op } = require("sequelize");
+const AppLog = require("../models/AppLog");
 
 const router = express.Router();
 
@@ -62,6 +63,12 @@ router.post("/create", upload.array("images", 5), async (req, res) => {
     });
     res.status(201).json({ message: "Product created successfully", product });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     console.log(error);
     res.status(500).json({ message: "Server error", error });
   }
@@ -74,6 +81,12 @@ router.get("/show", async (req, res) => {
       .status(200)
       .json({ message: "Products retrieved successfully", products });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -92,6 +105,12 @@ router.get("/detail", async (req, res) => {
       .status(200)
       .json({ message: "Product retrieved successfully", product });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -111,6 +130,12 @@ router.get("/related", async (req, res) => {
       .status(200)
       .json({ message: "Products retrieved successfully", products });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -144,6 +169,12 @@ router.put("/update/:id", upload.array("images", 5), async (req, res) => {
     await product.save();
     res.status(200).json({ message: "Product updated successfully", product });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -167,6 +198,12 @@ router.get("/search", async (req, res) => {
       .status(200)
       .json({ message: "Products retrieved successfully", products });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -181,6 +218,12 @@ router.delete("/delete/:id", async (req, res) => {
     await product.destroy();
     res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });

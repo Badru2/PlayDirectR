@@ -12,6 +12,7 @@ import ProductGrid from "../../components/products/ProductGrid";
 import axios from "axios";
 
 import Toast from "../../components/themes/alert";
+import { Helmet } from "react-helmet";
 
 const DetailProduct = () => {
   const { user } = useAuth();
@@ -99,6 +100,10 @@ const DetailProduct = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>{product?.name}</title>
+      </Helmet>
+
       <div ref={toTop} className="top-0 absolute z-[-10]" />
       {loading ? (
         <div className="flex flex-col lg:flex-row w-full lg:max-w-[1440px] mx-auto mt-4 gap-2 p-4">
@@ -153,7 +158,7 @@ const DetailProduct = () => {
           </div>
         </div>
       ) : (
-        <div className="pb-14">
+        <div className="pb-12">
           <div className="flex flex-col lg:flex-row max-w-[1440px] mx-auto mt-4 gap-2 p-4 lg:pb-4 lg:px-0">
             <div className="w-full lg:w-[400px]">
               <div className="sticky top-16 bg-white shadow-md py-3">

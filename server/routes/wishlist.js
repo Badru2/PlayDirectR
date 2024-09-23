@@ -1,5 +1,6 @@
 const express = require("express");
 const Wishlist = require("../models/Wishlist");
+const AppLog = require("../models/AppLog");
 
 const router = express.Router();
 
@@ -16,6 +17,12 @@ router.post("/add", async (req, res) => {
       .status(201)
       .json({ message: "Wishlist created successfully", wishlist });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -32,6 +39,12 @@ router.get("/show", async (req, res) => {
       .status(200)
       .json({ message: "Wishlists retrieved successfully", wishlists });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -48,6 +61,12 @@ router.delete("/delete/:id", async (req, res) => {
       .status(200)
       .json({ message: "Wishlist deleted successfully", wishlist });
   } catch (error) {
+    await AppLog.create({
+      message: error.message,
+      stack: error.stack,
+      route: req.originalUrl,
+    }); // Log error to the database
+
     res.status(500).json({ message: "Server error", error });
   }
 });

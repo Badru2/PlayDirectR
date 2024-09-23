@@ -3,15 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "../../store/authSlice";
 import { showFormatRupiah } from "../../components/themes/format-rupiah";
 import { createTransaction } from "../../store/transactionSlice";
-import {
-  addToCart,
-  clearCart,
-  deleteFromCart,
-  updateCart,
-} from "../../store/cartSlice";
+import { clearCart, deleteFromCart, updateCart } from "../../store/cartSlice";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Toast from "../../components/themes/alert";
+import { Helmet } from "react-helmet";
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -127,6 +123,10 @@ const CartPage = () => {
 
   return (
     <div className="pb-4">
+      <Helmet>
+        <title>PlayDirect | Cart</title>
+      </Helmet>
+
       {loading ? (
         <div className="flex space-x-3">
           <div className="flex flex-col gap-2 shadow-md p-4 w-3/4 h-[200px] bg-gray-400 animate-pulse">

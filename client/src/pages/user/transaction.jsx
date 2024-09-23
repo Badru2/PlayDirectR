@@ -7,6 +7,7 @@ import {
 } from "../../store/transactionSlice";
 import { showFormatRupiah } from "../../components/themes/format-rupiah";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const UserTransaction = () => {
   const dispatch = useDispatch();
@@ -53,6 +54,10 @@ const UserTransaction = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>PlayDirect | Transaction</title>
+      </Helmet>
+
       {loading ? (
         <div>
           <div>Loading...</div>
