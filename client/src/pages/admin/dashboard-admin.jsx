@@ -5,9 +5,9 @@ import LineChart from "../../components/charts/TransactionLineChart";
 import TransactionPieChart, {
   getProductSalesData,
 } from "../../components/charts/TransactionPieChart";
-import Toast from "../../components/themes/alert";
 import MonthlySalesLineChart from "../../components/charts/TransactionMonthly";
 import MonthlyProductSalesLineChart from "../../components/charts/TransactionProductChart";
+import { Helmet } from "react-helmet";
 
 const AdminDashboard = () => {
   // Set default month to current month
@@ -63,6 +63,9 @@ const AdminDashboard = () => {
 
   return (
     <div className="space-y-3 pb-12">
+      <Helmet>
+        <title>Admin | Dashboard</title>
+      </Helmet>
       <div className="flex space-x-3">
         {/* Sales Line Chart */}
         <div className="w-1/2 bg-white p-3 shadow-lg">

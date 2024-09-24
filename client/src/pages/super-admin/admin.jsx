@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createAdmin, deleteAdmin, getAdmins } from "../../store/adminSlice";
 import axios from "axios";
+import { Helmet } from "react-helmet";
 
 const AdminCRUD = () => {
   const dispatch = useDispatch();
@@ -72,6 +73,9 @@ const AdminCRUD = () => {
 
   return (
     <div className="pb-12">
+      <Helmet>
+        <title>Admins</title>
+      </Helmet>
       {loading ? (
         <p>Loading...</p>
       ) : (

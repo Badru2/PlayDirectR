@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Toast from "../../components/themes/alert";
+import { Helmet } from "react-helmet";
 
 const AppLogPage = () => {
   const [applogs, setApplogs] = useState([]);
@@ -39,13 +40,17 @@ const AppLogPage = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>App Logs</title>
+      </Helmet>
+
       {loading ? (
         <p>Loading logs...</p>
       ) : applogs.length === 0 ? (
         <p>No logs found.</p>
       ) : (
-        <div>
-          <table className="table">
+        <div className="flex flex-col items-center space-y-3">
+          <table className="table bg-white shadow-md rounded-sm">
             <thead>
               <tr className="text-2xl font-bold">
                 <td>User</td>

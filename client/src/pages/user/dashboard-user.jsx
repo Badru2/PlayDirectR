@@ -8,6 +8,7 @@ import axios from "axios";
 import Toast from "../../components/themes/alert";
 import { getUser } from "../../store/authSlice";
 import { Helmet } from "react-helmet";
+import ProductFlex from "../../components/products/ProductFLex";
 
 const UserDashboard = () => {
   const dispatch = useDispatch();
@@ -20,6 +21,11 @@ const UserDashboard = () => {
   const user = useSelector((state) => state.auth.user);
   const [loading, setLoading] = useState(true);
   const [sortedProducts, setSortedProducts] = useState([]);
+
+  const [randomCategoryProducts, setRandomCategoryProducts] = useState([]);
+  const [randomCategory, setRandomCategory] = useState("");
+
+  const [consoles, setConsoles] = useState([]);
 
   const toTop = useRef(null);
 
@@ -69,6 +75,44 @@ const UserDashboard = () => {
       });
       setSortedProducts(sorted.slice(0, 12));
     }
+  }, [products]);
+
+  useEffect(() => {
+    const randomize = (products) => {
+      if (!products || products.length === 0) return; // Avoid errors on empty products
+
+      const filteredConsoles = products.filter(
+        (product) => product.category === "Console"
+      );
+      setConsoles(filteredConsoles);
+
+      // Sort products by creation date (latest first)
+      const sortedProductsByDate = products.slice().sort((a, b) => {
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
+
+      // Get unique categories from sorted products
+      const uniqueCategories = [
+        ...new Set(sortedProductsByDate.map((product) => product.category)),
+      ];
+
+      if (uniqueCategories.length === 0) return; // No categories available
+
+      // Select a random category from the available categories
+      const randomIndex = Math.floor(Math.random() * uniqueCategories.length);
+      const selectedCategory = uniqueCategories[randomIndex];
+      setRandomCategory(selectedCategory);
+
+      // Filter products by the randomly selected category
+      const filteredProducts = sortedProductsByDate.filter(
+        (product) => product.category === selectedCategory
+      );
+
+      // Set the first 12 products from the filtered list
+      setRandomCategoryProducts(filteredProducts.slice(0, 6));
+    };
+
+    randomize(products);
   }, [products]);
 
   const handleAddToCart = async (e, { productId, quantity }) => {
@@ -178,7 +222,7 @@ const UserDashboard = () => {
             {/* Previous button */}
             <button
               type="button"
-              className="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none bg-transparent"
+              className="absolute top-0 start-0 z-30 flex items-center justify-center hover:outline-none hover:border-none border-none h-full px-4 cursor-pointer group focus:outline-none bg-transparent"
               onClick={prevSlide} // Use prevSlide function
             >
               <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
@@ -204,7 +248,7 @@ const UserDashboard = () => {
             {/* Next button */}
             <button
               type="button"
-              className="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none bg-transparent"
+              className="absolute top-0 end-0 z-30 flex items-center hover:border-none border-none justify-center h-full px-4 cursor-pointer group focus:outline-none bg-transparent"
               onClick={nextSlide} // Use nextSlide function
             >
               <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
@@ -230,10 +274,24 @@ const UserDashboard = () => {
 
           <div>
             <div className="text-2xl lg:text-3xl font-bold pb-4">
-              New On PlayDirect :
+              New On PlayDirect:
             </div>
             <ProductGrid
               products={sortedProducts}
+              handleAddToCart={handleAddToCart}
+              carts={carts}
+              user={user}
+            />
+          </div>
+
+          {/* Random Category Products Section */}
+          <div>
+            <div className="text-2xl lg:text-3xl font-bold py-4">
+              {randomCategory}:
+            </div>
+
+            <ProductGrid
+              products={randomCategoryProducts}
               handleAddToCart={handleAddToCart}
               carts={carts}
               user={user}

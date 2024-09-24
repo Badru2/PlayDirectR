@@ -45,7 +45,7 @@ const MonthlySalesLineChart = ({ transactions, month, width, height }) => {
         if (transaction.status === "finish") {
           salesByDay[transactionDay - 1] += transaction.total; // Add the transaction total to the corresponding day
 
-          salesByDay[transactionDay - 1] += transaction.total;
+          // salesByDay[transactionDay - 1] += transaction.total;
         }
       }
     });

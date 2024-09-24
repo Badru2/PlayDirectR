@@ -105,6 +105,8 @@ const CartPage = () => {
       await dispatch(clearCart(user.user.id));
       await fetchCart(user.user.id);
 
+      document.getElementById("transaction_modal").close();
+
       Toast.fire({
         icon: "success",
         title: "Transaction created successfully",
@@ -248,7 +250,9 @@ const CartPage = () => {
               </div>
               <button
                 disabled={carts.length === 0 || checkoutLoading} // Disable button during loading
-                onClick={handleCheckout}
+                onClick={() => {
+                  document.getElementById("transaction_modal").showModal();
+                }}
                 className={`w-full rounded-sm font-bold ${
                   checkoutLoading ? "bg-gray-400" : "bg-green-500"
                 } text-white ${
@@ -266,7 +270,9 @@ const CartPage = () => {
             </div>
             <button
               disabled={carts.length === 0 || checkoutLoading} // Disable button during loading
-              onClick={handleCheckout}
+              onClick={() => {
+                document.getElementById("transaction_modal").showModal();
+              }}
               className={`w-full rounded-sm font-bold ${
                 checkoutLoading ? "bg-gray-400" : "bg-green-500"
               } text-white ${
@@ -276,6 +282,53 @@ const CartPage = () => {
               {checkoutLoading ? "Processing..." : "Checkout"}
             </button>
           </div>
+
+          <dialog id="transaction_modal" className="modal">
+            <div className="modal-box w-7/12 max-w-5xl">
+              <form method="dialog">
+                {/* if there is a button in form, it will close the modal */}
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                  ✕
+                </button>
+              </form>
+              <div className="flex flex-wrap justify-center align-center space-x-3 space-y-5 py-12">
+                <Link className="w-1/4 object-contain hover:bg-slate-300 flex items-center">
+                  <img src="/images/BRI-Logo.jpg" alt="" />
+                </Link>
+
+                <Link className="w-1/4 object-contain hover:bg-slate-300 flex items-center">
+                  <img src="/images/GoPay-Logo-2016.png" alt="" />
+                </Link>
+
+                <Link className="w-1/4 object-contain hover:bg-slate-300 flex items-center">
+                  <img src="/images/Bank-BNI-Logo.jpeg" alt="" />
+                </Link>
+
+                <Link className="w-1/4 object-contain hover:bg-slate-300 flex items-center">
+                  <img src="/images/Ovo-Logo.png" alt="" />
+                </Link>
+
+                <Link className="w-1/4 object-contain hover:bg-slate-300 flex items-center">
+                  <img src="/images/Dana-Logo.jpg" alt="" />
+                </Link>
+
+                <Link className="w-1/4 object-contain hover:bg-slate-300 flex items-center">
+                  <img src="/images/PayPal-Logo.jpeg" alt="" />
+                </Link>
+              </div>
+              <button
+                disabled={carts.length === 0 || checkoutLoading} // Disable button during loading
+                onClick={handleCheckout}
+                className={`w-full rounded-sm font-bold ${
+                  checkoutLoading ? "bg-gray-400" : "bg-green-500"
+                } text-white ${
+                  carts.length === 0 ? "cursor-not-allowed opacity-50" : ""
+                } `}
+              >
+                {checkoutLoading ? "Processing..." : "Checkout"}
+              </button>
+            </div>
+          </dialog>
         </div>
       )}
     </div>

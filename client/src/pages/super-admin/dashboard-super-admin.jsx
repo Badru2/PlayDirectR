@@ -7,6 +7,7 @@ import TransactionPieChart, {
 import MonthlySalesLineChart from "../../components/charts/TransactionMonthly";
 import MonthlyProductSalesLineChart from "../../components/charts/TransactionProductChart";
 import { showFormatRupiah } from "../../components/themes/format-rupiah";
+import { Helmet } from "react-helmet";
 
 const SuperAdminDashboard = () => {
   // Set default month to current month
@@ -122,6 +123,10 @@ const SuperAdminDashboard = () => {
 
   return (
     <div className="space-y-3 pb-12">
+      <Helmet>
+        <title>Super Admin Dashboard</title>
+      </Helmet>
+
       <div className="grid grid-cols-4 gap-5">
         <div className="bg-blue-500 text-white p-3 flex  text-3xl shadow-lg rounded-sm space-x-3">
           <div className="text-7xl flex items-center">

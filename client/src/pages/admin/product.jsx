@@ -15,6 +15,7 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import { showFormatRupiah } from "../../components/themes/format-rupiah";
 import axios from "axios";
 import Toast from "../../components/themes/alert";
+import { Helmet } from "react-helmet";
 
 const ProductPage = () => {
   const dispatch = useDispatch();
@@ -161,6 +162,10 @@ const ProductPage = () => {
 
   return (
     <div className="space-y-3">
+      <Helmet>
+        <title>Admin | Products</title>
+      </Helmet>
+
       <div className="w-full overflow-auto shadow-md">
         <form
           onSubmit={handleSubmit}

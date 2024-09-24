@@ -13,6 +13,7 @@ import axios from "axios";
 
 import Toast from "../../components/themes/alert";
 import { Helmet } from "react-helmet";
+import ProductFlex from "../../components/products/ProductFLex";
 
 const DetailProduct = () => {
   const { user } = useAuth();
@@ -306,7 +307,11 @@ const DetailProduct = () => {
 
           <div className="w-full p-4 lg:p-0 space-y-3">
             <div className="font-bold text-2xl">Related Product :</div>
-            <ProductGrid
+            {/* <ProductGrid
+              products={relatedProducts}
+              handleAddToCart={handleAddToCart}
+            /> */}
+            <ProductFlex
               products={relatedProducts}
               handleAddToCart={handleAddToCart}
             />

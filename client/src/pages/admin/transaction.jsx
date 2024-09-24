@@ -5,6 +5,7 @@ import {
   updateTransaction,
 } from "../../store/transactionSlice";
 import { showFormatRupiah } from "../../components/themes/format-rupiah";
+import { Helmet } from "react-helmet";
 
 const AdminTransaction = () => {
   const dispatch = useDispatch();
@@ -62,6 +63,10 @@ const AdminTransaction = () => {
 
   return (
     <div className="pb-12">
+      <Helmet>
+        <title>Admin | Transaction</title>
+      </Helmet>
+
       {loading ? (
         <div>
           <h1>Loading...</h1>
