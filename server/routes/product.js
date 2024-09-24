@@ -168,6 +168,16 @@ router.put("/update/:id", upload.array("images", 5), async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
+    // Keep track of old values for history logging
+    const oldProduct = {
+      name: product.name,
+      price: product.price,
+      quantity: product.quantity,
+      description: product.description,
+      category: product.category,
+      images: product.images,
+    };
+
     // Update product details
     product.name = name || product.name;
     product.user_id = user_id || product.user_id;
@@ -176,37 +186,39 @@ router.put("/update/:id", upload.array("images", 5), async (req, res) => {
     product.quantity = quantity || product.quantity;
     product.category = category || product.category;
 
+    let imagePaths;
     // Update product images if any files are uploaded
     if (req.files && req.files.length > 0) {
-      const imagePaths = req.files.map((file) => file.filename); // Store file names in the database
+      imagePaths = req.files.map((file) => file.filename); // Store file names in the database
       product.images = imagePaths; // Update the product's images field
     }
 
     // Save the updated product
     await product.save();
 
-    // History update
+    // Only create history if the product was updated successfully
     await HistoryAdmin.create({
       user_id: user_id,
       product_id: id,
-      old_product_name: product.name,
-      new_product_name: name,
-      old_product_price: product.price,
-      new_product_price: price,
-      old_product_quantity: product.quantity,
-      new_product_quantity: quantity,
-      old_product_description: product.description,
-      new_product_description: description,
-      old_product_category: product.category,
-      new_product_category: category,
-      old_product_images: product.images,
-      new_product_images: imagePaths,
+      old_product_name: oldProduct.name,
+      new_product_name: product.name,
+      old_product_price: oldProduct.price,
+      new_product_price: product.price,
+      old_product_quantity: oldProduct.quantity,
+      new_product_quantity: product.quantity,
+      old_product_description: oldProduct.description,
+      new_product_description: product.description,
+      old_product_category: oldProduct.category,
+      new_product_category: product.category,
+      old_product_images: oldProduct.images,
+      new_product_images: imagePaths || oldProduct.images,
       status: "update",
     });
 
     res.status(200).json({ message: "Product updated successfully", product });
   } catch (error) {
     await AppLog.create({
+      user_id: user_id,
       message: "Error updating product: " + error.message,
       route: req.originalUrl,
     }); // Log error to the database

@@ -22,6 +22,12 @@ const SuperAdminLayout = () => {
             >
               Admin
             </Link>
+            <Link
+              to={"/super-admin/applog"}
+              className="font-bold text-black hover:text-black text-xl"
+            >
+              AppLog
+            </Link>
           </div>
           <button onClick={logout} className="p-0 text-red-500 bg-white">
             Logout

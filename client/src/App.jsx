@@ -26,6 +26,7 @@ import AdminTransaction from "./pages/admin/transaction";
 import DetailTransaction from "./pages/user/detail-transaction";
 import UnauthLayout from "./components/layouts/layout-unauth";
 import UserProfile from "./pages/user/profile";
+import AppLogPage from "./pages/super-admin/applogPage";
 
 const App = () => {
   return (
@@ -85,6 +86,7 @@ const App = () => {
                 <Route path="super-admin" element={<SuperAdminLayout />}>
                   <Route path="dashboard" element={<SuperAdminDashboard />} />
                   <Route path="admin" element={<AdminCRUD />} />
+                  <Route path="applog" element={<AppLogPage />} />
                 </Route>
               </Route>
             </Routes>

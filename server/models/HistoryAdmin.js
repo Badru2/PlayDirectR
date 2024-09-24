@@ -18,7 +18,7 @@ const HistoryAdmin = sequelize.define(
     },
     new_product_name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     old_product_price: {
       type: DataTypes.INTEGER,
@@ -26,7 +26,7 @@ const HistoryAdmin = sequelize.define(
     },
     new_product_price: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     old_product_description: {
       type: DataTypes.TEXT,
@@ -34,7 +34,7 @@ const HistoryAdmin = sequelize.define(
     },
     new_product_description: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      allowNull: true,
     },
     old_product_images: {
       type: DataTypes.JSON,
@@ -42,7 +42,7 @@ const HistoryAdmin = sequelize.define(
     },
     new_product_images: {
       type: DataTypes.JSON,
-      allowNull: false,
+      allowNull: true,
     },
     old_product_category: {
       type: DataTypes.STRING,
@@ -50,7 +50,7 @@ const HistoryAdmin = sequelize.define(
     },
     new_product_category: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     old_product_quantity: {
       type: DataTypes.INTEGER,
@@ -58,7 +58,7 @@ const HistoryAdmin = sequelize.define(
     },
     new_product_quantity: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     status: {
       type: DataTypes.STRING,

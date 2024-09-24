@@ -16,6 +16,7 @@ const SuperAdminDashboard = () => {
 
   const [transactions, setTransactions] = useState([]);
   const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const [topProducts, setTopProducts] = useState({ labels: [], data: [] });
 
   const [admins, setAdmins] = useState([]);
@@ -44,6 +45,7 @@ const SuperAdminDashboard = () => {
       // get the top 8
       const top8Products = response.data.products.slice(0, 8);
       setProducts(top8Products);
+      setAllProducts(response.data.products);
     } catch (error) {
       console.error(error);
     }
@@ -77,12 +79,20 @@ const SuperAdminDashboard = () => {
       );
       // slice 5
       const createdSlice = created.slice(0, 5);
+      // sort by date
+      createdSlice.sort((a, b) => {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
       // filter updated
       const updated = response.data.filter(
         (history) => history.status === "update"
       );
       // slice 5
       const updateSlice = updated.slice(0, 5);
+      // sort by date
+      updateSlice.sort((a, b) => {
+        return new Date(b.updatedAt) - new Date(a.updatedAt);
+      });
 
       setHistoryCreate(createdSlice);
       setHistoryUpdate(updateSlice);
@@ -148,7 +158,7 @@ const SuperAdminDashboard = () => {
             <span className="icon-[icon-park-outline--ad-product]"></span>
           </div>
           <div>
-            <div>{products.length}</div>
+            <div>{allProducts.length}</div>
             <div>Products</div>
           </div>
         </div>

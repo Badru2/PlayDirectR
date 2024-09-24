@@ -12,13 +12,16 @@ export const getProductSalesData = (transactions) => {
 
   // Sum sales per product
   transactions.forEach((transaction) => {
-    transaction.products.forEach((product) => {
-      if (productSales[product.product_name]) {
-        productSales[product.product_name] += product.quantity;
-      } else {
-        productSales[product.product_name] = product.quantity;
-      }
-    });
+    // filter by status
+    if (transaction.status === "finish") {
+      transaction.products.forEach((product) => {
+        if (productSales[product.product_name]) {
+          productSales[product.product_name] += product.quantity;
+        } else {
+          productSales[product.product_name] = product.quantity;
+        }
+      });
+    }
   });
 
   // Convert the productSales object into an array of product objects

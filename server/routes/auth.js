@@ -221,7 +221,7 @@ router.delete("/delete/:id", async (req, res) => {
 router.put("/update/:id", upload.single("avatar"), async (req, res) => {
   try {
     const id = req.params.id;
-    const { username, email, password, role, address } = req.body;
+    const { username, name, phone, email, password, role, address } = req.body;
 
     const user = await User.findByPk(id);
     if (!user) {
@@ -242,6 +242,8 @@ router.put("/update/:id", upload.single("avatar"), async (req, res) => {
       {
         username: username || user.username,
         email: email || user.email,
+        name: name || user.name,
+        phone: phone || user.phone,
         password: hashedPassword || undefined, // don't update if no new password
         role: role || user.role,
         avatar: avatar || user.avatar, // don't update if no avatar uploaded

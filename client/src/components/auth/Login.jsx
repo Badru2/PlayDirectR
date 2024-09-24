@@ -61,19 +61,20 @@ const Login = () => {
   };
 
   return (
-    <div className="bg-white shadow-md">
+    <div className="bg-transparent backdrop-blur-sm shadow-md">
       <Helmet>
         <title>PlayDirect | Login</title>
       </Helmet>
 
-      <form onSubmit={handleSubmit} className=" p-4 space-y-3">
+      <form onSubmit={handleSubmit} className="p-12 px-12 space-y-6">
+        <div className="text-3xl font-serif">LOGIN</div>
         <input
           name="email"
           type="email"
           placeholder="Email"
           onChange={handleChange}
           value={formData.email}
-          className="w-full border p-2"
+          className="w-full border p-2 bg-gray-100 bg-opacity-50 backdrop-blur-lg"
           required
         />
         {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
@@ -84,15 +85,18 @@ const Login = () => {
           placeholder="Password"
           onChange={handleChange}
           value={formData.password}
-          className="w-full border p-2"
+          className="w-full border p-2 bg-gray-100 bg-opacity-50 backdrop-blur-lg"
           required
         />
         {errors.password && (
           <p className="text-red-500 text-sm">{errors.password}</p>
         )}
 
-        <button type="submit" className="w-full bg-blue-500 text-white">
-          Login
+        <button
+          type="submit"
+          className="w-full bg-blue-500 rounded-sm hover:scale-105 transition-transform duration-200 backdrop-blur-md text-white opacity-80"
+        >
+          SUBMIT
         </button>
       </form>
 

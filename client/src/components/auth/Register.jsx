@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { loginSuccess } from "../../store/authSlice";
 import validator from "validator";
 import Toast from "../../components/themes/alert";
+import { Helmet } from "react-helmet";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -79,14 +80,18 @@ const Register = () => {
   };
 
   return (
-    <div className="bg-white shadow-md">
-      <form onSubmit={handleSubmit} className="p-4 space-y-3">
+    <div className="bg-transparent backdrop-blur-sm shadow-md">
+      <Helmet>
+        <title>PlayDirect | Register</title>
+      </Helmet>
+      <form onSubmit={handleSubmit} className="p-12 px-12 space-y-6">
+        <div className="text-3xl font-serif">REGISTER</div>
         <input
           name="username"
           placeholder="Username"
           onChange={handleChange}
           required
-          className="w-full p-3 border border-gray-500 rounded-sm"
+          className="w-full border p-2 bg-gray-100 bg-opacity-50 backdrop-blur-lg"
         />
         <input
           name="email"
@@ -94,7 +99,7 @@ const Register = () => {
           placeholder="Email"
           onChange={handleChange}
           required
-          className="w-full p-3 border border-gray-500 rounded-sm"
+          className="w-full border p-2 bg-gray-100 bg-opacity-50 backdrop-blur-lg"
         />
         <input
           name="password"
@@ -102,11 +107,11 @@ const Register = () => {
           placeholder="Password"
           onChange={handleChange}
           required
-          className="w-full p-3 border border-gray-500 rounded-sm"
+          className="w-full border p-2 bg-gray-100 bg-opacity-50 backdrop-blur-lg"
         />
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white rounded-sm"
+          className="w-full bg-blue-500 rounded-sm hover:scale-105 transition-transform duration-200 backdrop-blur-md text-white opacity-80"
         >
           Register
         </button>

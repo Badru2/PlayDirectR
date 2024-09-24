@@ -33,7 +33,10 @@ const getMonthlyTransactionTotals = (transactions) => {
 
   transactions.forEach((transaction) => {
     const month = dayjs(transaction.createdAt).month(); // Get the month (0 for January, 11 for December)
-    monthlyTotals[month] += transaction.total; // Add the transaction total to the corresponding month
+    // filter by status
+    if (transaction.status === "finish") {
+      monthlyTotals[month] += transaction.total; // Add the transaction total to the corresponding month
+    }
   });
 
   return monthlyTotals;

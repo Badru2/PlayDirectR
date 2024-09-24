@@ -9,6 +9,7 @@ const wishlistRoutes = require("./routes/wishlist");
 const userRoutes = require("./routes/user");
 const carouselRoutes = require("./routes/carousel");
 const historyAdminRoutes = require("./routes/historyAdmin");
+const applogRoutes = require("./routes/appLog");
 
 const path = require("path");
 
@@ -92,6 +93,7 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/carousel", carouselRoutes);
 app.use("/api/history", historyAdminRoutes);
+app.use("/api/applog", applogRoutes);
 
 // Sequelize associations
 User.hasMany(Transaction, { foreignKey: "user_id" });

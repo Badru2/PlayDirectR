@@ -136,6 +136,8 @@ const ProductPage = () => {
       setFiles([]);
     } catch (error) {
       console.log(error);
+
+      Toast.fire({ icon: "error", title: "Failed to add / update product" });
     }
   };
 

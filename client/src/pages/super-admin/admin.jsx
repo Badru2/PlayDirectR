@@ -71,7 +71,7 @@ const AdminCRUD = () => {
   };
 
   return (
-    <div>
+    <div className="pb-12">
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -79,7 +79,7 @@ const AdminCRUD = () => {
           <div className="w-1/4">
             <form
               onSubmit={handleSubmit}
-              className="bg-white shadow-md p-3 space-y-3"
+              className="bg-white shadow-md p-3 space-y-3 sticky top-16"
             >
               <h1 className="text-xl font-bold">
                 {isEditing ? "Edit Admin" : "Create Admin"}

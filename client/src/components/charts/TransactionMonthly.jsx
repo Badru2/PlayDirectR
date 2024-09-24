@@ -39,9 +39,14 @@ const MonthlySalesLineChart = ({ transactions, month, width, height }) => {
       const transactionMonth = transactionDate.getMonth(); // Get month (0 = January, 1 = February, etc.)
       const transactionDay = transactionDate.getDate(); // Get day of the month
 
+      // filter by status
       // If the transaction is in the given month, add its total to the corresponding day
       if (transactionMonth === month) {
-        salesByDay[transactionDay - 1] += transaction.total;
+        if (transaction.status === "finish") {
+          salesByDay[transactionDay - 1] += transaction.total; // Add the transaction total to the corresponding day
+
+          salesByDay[transactionDay - 1] += transaction.total;
+        }
       }
     });
 

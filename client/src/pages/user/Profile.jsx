@@ -38,6 +38,8 @@ const UserProfile = () => {
 
     const formData = new FormData();
     formData.append("username", profile.username);
+    formData.append("name", profile.name);
+    formData.append("phone", profile.phone);
     formData.append("email", profile.email);
     formData.append("address", profile.address);
 
@@ -152,13 +154,22 @@ const UserProfile = () => {
 
               <div className="space-y-2">
                 <div>
-                  Name: <b>{profile?.username}</b>
+                  Username: <b>{profile?.username}</b>
+                </div>
+                <div>
+                  Name: <b>{profile?.name}</b>
+                </div>
+                <div>
+                  Phone: <b>{profile.phone !== null ? profile.phone : "N/A"}</b>
                 </div>
                 <div>
                   Email: <b>{profile?.email}</b>
                 </div>
                 <div>
-                  Address: <div>{profile?.address}</div>
+                  Address:{" "}
+                  <div>
+                    {profile.address !== null ? profile.address : "N/A"}
+                  </div>
                 </div>
               </div>
             </div>
@@ -170,8 +181,8 @@ const UserProfile = () => {
                 <h1 className="text-3xl font-bold">Edit User Profile :</h1>
                 <hr className="my-2" />
 
-                <form onSubmit={updateProfile}>
-                  <div className="mb-4">
+                <form onSubmit={updateProfile} className="space-y-4">
+                  <div className="">
                     <label
                       className="block text-gray-700 text-sm font-bold mb-2"
                       htmlFor="username"
@@ -189,7 +200,43 @@ const UserProfile = () => {
                       }
                     />
                   </div>
-                  <div className="mb-4">
+                  <div>
+                    <label
+                      className="block text-gray-700 text-sm font-bold mb-2"
+                      htmlFor="name"
+                    >
+                      Name
+                    </label>
+                    <input
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      id="name"
+                      type="text"
+                      placeholder="Name"
+                      value={profile?.name || ""}
+                      onChange={(e) =>
+                        setProfile({ ...profile, name: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label
+                      className="block text-gray-700 text-sm font-bold mb-2"
+                      htmlFor="phone"
+                    >
+                      Phone
+                    </label>
+                    <input
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      id="phone"
+                      type="number"
+                      placeholder="Phone"
+                      value={profile?.phone || ""}
+                      onChange={(e) =>
+                        setProfile({ ...profile, phone: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="">
                     <label
                       className="block text-gray-700 text-sm font-bold mb-2"
                       htmlFor="email"
@@ -207,7 +254,7 @@ const UserProfile = () => {
                       }
                     />
                   </div>
-                  <div className="mb-4">
+                  <div className="">
                     <label
                       className="block text-gray-700 text-sm font-bold mb-2"
                       htmlFor="address"
@@ -225,7 +272,7 @@ const UserProfile = () => {
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     ></textarea>
                   </div>
-                  <div className="mb-4">
+                  <div className="">
                     <label
                       className="block text-gray-700 text-sm font-bold mb-2"
                       htmlFor="avatar"
