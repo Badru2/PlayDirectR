@@ -49,6 +49,16 @@ const DetailProduct = () => {
         (product) => product.id !== Number(productId)
       );
 
+      // sort by created_at
+      filteredProducts.sort((a, b) => {
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
+
+      // limit to 4 products
+      if (filteredProducts.length > 8) {
+        filteredProducts.length = 8;
+      }
+
       setRelatedProducts(filteredProducts);
     } catch (error) {
       console.log("Error fetching related products:", error);
@@ -306,7 +316,7 @@ const DetailProduct = () => {
           </div>
 
           <div className="w-full p-4 lg:p-0 space-y-3">
-            <div className="font-bold text-2xl">Related Product :</div>
+            <div className="font-bold text-2xl">Related Category :</div>
             {/* <ProductGrid
               products={relatedProducts}
               handleAddToCart={handleAddToCart}

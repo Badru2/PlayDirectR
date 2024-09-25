@@ -145,7 +145,7 @@ const UserTransaction = () => {
                           }
                           className={
                             "bg-green-500 text-white font-bold rounded-sm " +
-                            (transaction.status == "finish"
+                            (transaction.status == "finish" || "on-Packing"
                               ? "cursor-not-allowed opacity-50"
                               : "")
                           }

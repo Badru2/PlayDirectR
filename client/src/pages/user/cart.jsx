@@ -124,7 +124,7 @@ const CartPage = () => {
   };
 
   return (
-    <div className="pb-4">
+    <div className="pb-24 lg:pb-4">
       <Helmet>
         <title>PlayDirect | Cart</title>
       </Helmet>
@@ -264,7 +264,7 @@ const CartPage = () => {
             </div>
           </div>
 
-          <div className="bg-white shadow-md p-4 space-y-3 sticky bottom-0 w-full lg:hidden">
+          <div className="bg-white shadow-md p-4 space-y-3 fixed bottom-0 w-full lg:hidden">
             <div className="flex justify-between font-bold text-xl">
               Total: <span>{showFormatRupiah(totalPrice)}</span>
             </div>

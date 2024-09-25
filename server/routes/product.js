@@ -96,7 +96,9 @@ router.post("/create", upload.array("images", 5), async (req, res) => {
 
 router.get("/show", async (req, res) => {
   try {
-    const products = await Product.findAll();
+    const products = await Product.findAll({
+      limit: 30,
+    });
     res
       .status(200)
       .json({ message: "Products retrieved successfully", products });
@@ -106,6 +108,28 @@ router.get("/show", async (req, res) => {
       route: req.originalUrl,
     }); // Log error to the database
 
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
+router.get("/all", async (req, res) => {
+  // create pagination
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+
+  try {
+    const { count, rows: products } = await Product.findAndCountAll({
+      limit,
+      offset,
+    });
+    res.status(200).json({
+      totalProducts: count, // Total number of products
+      totalPages: Math.ceil(count / limit), // Calculate the total number of pages
+      currentPage: page, // Current page number
+      products, // Paginated products for this page
+    });
+  } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
 });
@@ -138,6 +162,7 @@ router.get("/related", async (req, res) => {
 
   try {
     const products = await Product.findAll({
+      limit: 10,
       where: {
         category: {
           [Op.iLike]: `%${category}%`,
@@ -236,6 +261,7 @@ router.get("/search", async (req, res) => {
 
   try {
     const products = await Product.findAll({
+      limit: 5,
       where: {
         name: {
           [Op.iLike]: `%${productName}%`,

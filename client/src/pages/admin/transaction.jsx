@@ -83,6 +83,7 @@ const AdminTransaction = () => {
                   className="w-full py-3 px-2 rounded-sm border"
                 >
                   <option value="pending">Pending</option>
+                  <option value="on-Packing">Accept</option>
                   <option value="deliver">Deliver</option>
                   <option value="cancelled">Cancelled</option>
                 </select>
@@ -153,16 +154,30 @@ const AdminTransaction = () => {
                         </div>
                       ))}
                     </div>
-                    {transaction.status === "pending" && (
+                    {transaction.status === "on-Packing" || "pending" ? (
                       <div className="flex space-x-3 self-end">
-                        <button
-                          onClick={() =>
-                            handleUpdateTransaction(transaction.id, "deliver")
-                          }
-                          className="bg-blue-500 text-white font-bold rounded-sm"
-                        >
-                          Deliver
-                        </button>
+                        {transaction.status !== "on-Packing" ? (
+                          <button
+                            onClick={() =>
+                              handleUpdateTransaction(
+                                transaction.id,
+                                "on-Packing"
+                              )
+                            }
+                            className="bg-blue-500 text-white font-bold rounded-sm"
+                          >
+                            Accept
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() =>
+                              handleUpdateTransaction(transaction.id, "deliver")
+                            }
+                            className="bg-green-500 text-white font-bold rounded-sm"
+                          >
+                            Deliver
+                          </button>
+                        )}
                         <button
                           onClick={() =>
                             handleUpdateTransaction(transaction.id, "cancelled")
@@ -172,6 +187,8 @@ const AdminTransaction = () => {
                           Cancel
                         </button>
                       </div>
+                    ) : (
+                      <></>
                     )}
                   </div>
                 )}

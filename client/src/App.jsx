@@ -27,6 +27,7 @@ import DetailTransaction from "./pages/user/detail-transaction";
 import UnauthLayout from "./components/layouts/layout-unauth";
 import UserProfile from "./pages/user/profile";
 import AppLogPage from "./pages/super-admin/applogPage";
+import AllProducts from "./pages/user/all-product";
 
 const App = () => {
   return (
@@ -46,6 +47,7 @@ const App = () => {
               <Route element={<UserLayout />}>
                 <Route path="/" element={<UserDashboard />} />
                 <Route path="detail" element={<DetailProduct />} />
+                <Route path="products" element={<AllProducts />} />
               </Route>
 
               {/* User Protected Routes */}
